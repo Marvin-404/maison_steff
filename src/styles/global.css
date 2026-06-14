@@ -2085,9 +2085,8 @@
     }
 
     .guided-reservation {
-      grid-template-columns: 0.72fr 1.28fr;
-      align-items: start;
-      gap: 5rem;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
     }
 
     .reservation-intro {
