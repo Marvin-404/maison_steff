@@ -1,0 +1,22 @@
+---
+import { site } from "../data/site";
+import { withBase } from "../utils/asset";
+---
+
+<section
+  class="final-cta"
+  style={`--cta-image: url("${withBase("images/real/pastel-mixto.jpg")}")`}
+>
+  <div class="container final-cta-inner" data-reveal>
+    <p class="eyebrow eyebrow-light">Tu próximo detalle</p>
+    <h2>Haz que tu próximo detalle se sienta especial.</h2>
+    <p>Reserva por Instagram y consulta los cupos disponibles de esta semana.</p>
+    <div class="button-row">
+      <a class="button button-light" href="#reservar">Crear solicitud de pedido</a>
+      <a class="button button-outline-light" href={site.instagramDmUrl} target="_blank" rel="noreferrer">
+        Abrir chat
+      </a>
+    </div>
+    <span class="cta-signature">Maison Steff · Hecho artesanalmente para enamorar</span>
+  </div>
+</section>

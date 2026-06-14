@@ -1,0 +1,36 @@
+---
+import { withBase } from "../utils/asset";
+
+const ideas = [
+  ["Sabor", "Preparado con ingredientes frescos y una receta cuidada."],
+  ["Intención", "Pensado para celebrar, agradecer o simplemente consentir."],
+  ["Presentación", "Entregado como un detalle que emociona antes del primer bocado."],
+];
+---
+
+<section class="narrative" id="historia">
+  <div class="narrative-photo" data-reveal>
+    <img
+      src={withBase("images/real/pastel-fresa.jpg")}
+      alt="Pastel individual de fresa Maison Steff mostrando su relleno"
+      width="1200"
+      height="1440"
+      loading="lazy"
+    />
+    <span class="photo-caption">Una pequeña obra de dulzura.</span>
+  </div>
+  <div class="narrative-copy" data-reveal>
+    <p class="eyebrow">Hecho con intención</p>
+    <h2>Un detalle.<br /><em>Toda una experiencia.</em></h2>
+    <p class="lead">
+      Sabor artesanal, presentación delicada y un momento listo para compartir.
+    </p>
+    <div class="narrative-list">
+      {ideas.map(([title, text]) => (
+        <article>
+          <div><h3>{title}</h3><p>{text}</p></div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

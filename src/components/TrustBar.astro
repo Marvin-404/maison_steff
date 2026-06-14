@@ -1,0 +1,13 @@
+---
+const attributes = ["Artesanal", "Presentación premium", "Por reserva", "Listo para regalar"];
+---
+
+<section class="trust-bar" aria-label="Atributos Maison Steff">
+  <div class="trust-grid">
+    {attributes.map((label) => (
+      <div class="trust-item">
+        <strong>{label}</strong>
+      </div>
+    ))}
+  </div>
+</section>

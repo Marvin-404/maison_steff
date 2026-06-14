@@ -1,0 +1,38 @@
+---
+import { site } from "../data/site";
+import { withBase } from "../utils/asset";
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="#inicio">
+        <img src={withBase("images/real/maison-steff-logo.png")} alt="" width="520" height="520" loading="lazy" />
+        <span><strong>Maison</strong><em>Steff</em></span>
+      </a>
+      <p>Pasteles individuales por encargo, creados para regalar, celebrar y consentir.</p>
+    </div>
+    <div>
+      <h2>Explora</h2>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#experiencia">Experiencia</a>
+      <a href="#reservar">Reservar</a>
+      <a href="#preguntas">Preguntas frecuentes</a>
+    </div>
+    <div>
+      <h2>Conversemos</h2>
+      <a href={site.instagramUrl} target="_blank" rel="noreferrer">Instagram {site.instagramHandle}</a>
+      <p>{site.attention}</p>
+      <p>{site.schedule}</p>
+      <a class="footer-qr" href={site.instagramUrl} target="_blank" rel="noreferrer" aria-label="Abrir Instagram de Maison Steff">
+        <img src={withBase("images/real/qr-instagram.png")} alt="Código QR de Instagram de Maison Steff" width="810" height="810" loading="lazy" />
+        <span>Escanea para ver Instagram</span>
+      </a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© {year} Maison Steff. Todos los derechos reservados.</p>
+    <p>Sitio estático informativo. Pedidos sujetos a disponibilidad.</p>
+  </div>
+</footer>

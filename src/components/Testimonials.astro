@@ -1,0 +1,24 @@
+---
+import { testimonials } from "../data/site";
+---
+
+<section class="section testimonials-section" aria-labelledby="testimonials-title">
+  <div class="container">
+    <div class="section-heading centered-heading" data-reveal>
+      <p class="eyebrow">Palabras bonitas</p>
+      <h2 id="testimonials-title">Regalos que dejan una impresión dulce.</h2>
+    </div>
+    <div class="testimonial-grid">
+      {testimonials.map((testimonial) => (
+        <figure class="testimonial-card" data-reveal>
+          <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
+          <blockquote>“{testimonial.quote}”</blockquote>
+          <figcaption>
+            <strong>{testimonial.name}</strong>
+            <span>{testimonial.detail}</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>

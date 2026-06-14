@@ -1,0 +1,307 @@
+---
+import { products } from "../data/products";
+import { site } from "../data/site";
+import { withBase } from "../utils/asset";
+---
+
+<section class="section reservation-section" id="reservar">
+  <div class="container guided-reservation">
+    <div class="reservation-intro" data-reveal>
+      <p class="eyebrow eyebrow-light">Reserva fácil</p>
+      <h2>Elige. Copia.<br />Reserva.</h2>
+      <p>Prepara tu solicitud y envíala por Instagram.</p>
+    </div>
+
+    <form class="guided-form" id="reservation-form" data-instagram={site.instagramDmUrl} data-reveal>
+      <div class="step-header">
+        <div>
+          <span class="step-kicker">Preparar mi solicitud</span>
+          <strong id="step-title">Elige tu favorito</strong>
+        </div>
+        <span class="step-counter"><b id="current-step">01</b> / 03</span>
+      </div>
+      <div class="step-progress" aria-hidden="true"><span id="step-progress-bar"></span></div>
+
+      <section class="reservation-step active" data-step-panel="1" aria-labelledby="step-one-title">
+        <div class="step-copy">
+          <span>Primer paso</span>
+          <h3 id="step-one-title">¿Qué quieres regalar o disfrutar?</h3>
+          <p>Selecciona una opción. Podrás consultar personalizaciones por mensaje.</p>
+        </div>
+        <div class="product-choice-grid">
+          {products.map((product) => (
+            <label class="product-choice">
+              <input type="radio" name="product" value={product.name} required />
+              <img src={withBase(product.image)} alt="" width="680" height="760" loading="lazy" />
+              <span>
+                <small>{product.badge}</small>
+                <strong>{product.name}</strong>
+                <em>{product.price}</em>
+              </span>
+              <i aria-hidden="true">✓</i>
+            </label>
+          ))}
+        </div>
+        <div class="step-footer">
+          <p>Preparado por encargo y sujeto a disponibilidad.</p>
+          <button class="button next-step" type="button" data-next="2">Continuar <span>→</span></button>
+        </div>
+      </section>
+
+      <section class="reservation-step" data-step-panel="2" aria-labelledby="step-two-title" hidden>
+        <div class="step-copy">
+          <span>Segundo paso</span>
+          <h3 id="step-two-title">Cuéntanos un poco más.</h3>
+          <p>Solo necesitamos los detalles esenciales para revisar tu solicitud.</p>
+        </div>
+        <div class="detail-fields">
+          <div class="field quantity-field">
+            <label for="quantity">Cantidad</label>
+            <div class="quantity-control">
+              <button type="button" data-quantity="-1" aria-label="Disminuir cantidad">−</button>
+              <input id="quantity" name="quantity" type="number" min="1" value="1" required />
+              <button type="button" data-quantity="1" aria-label="Aumentar cantidad">+</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="date">Fecha deseada</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+        </div>
+        <fieldset class="choice-field">
+          <legend>¿Para qué ocasión?</legend>
+          <div class="choice-chips">
+            {["Cumpleaños", "Aniversario", "Detalle especial", "Reunión", "Solo porque sí"].map((occasion, index) => (
+              <label>
+                <input type="radio" name="occasion" value={occasion} checked={index === 0} />
+                <span>{occasion}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div class="field">
+          <label for="dedication">Mensaje o detalle especial <span>opcional</span></label>
+          <textarea id="dedication" name="dedication" rows="3" placeholder="Ejemplo: una dedicatoria breve, colores favoritos o idea especial"></textarea>
+        </div>
+        <div class="step-footer">
+          <button class="text-button previous-step" type="button" data-previous="1"><span>←</span> Volver</button>
+          <button class="button next-step" type="button" data-next="3">Ver mi resumen <span>→</span></button>
+        </div>
+      </section>
+
+      <section class="reservation-step" data-step-panel="3" aria-labelledby="step-three-title" hidden>
+        <div class="step-copy">
+          <span>Último paso</span>
+          <h3 id="step-three-title">Tu solicitud está casi lista.</h3>
+          <p>Revisa el resumen. Maison Steff confirmará disponibilidad y precio final personalmente.</p>
+        </div>
+        <div class="field">
+          <label for="customer-name">¿A nombre de quién preparamos la solicitud?</label>
+          <input id="customer-name" name="customerName" type="text" autocomplete="name" placeholder="Tu nombre" required />
+        </div>
+        <fieldset class="choice-field">
+          <legend>¿Cómo prefieres recibirlo?</legend>
+          <div class="choice-chips">
+            <label>
+              <input type="radio" name="delivery" value="Recoger" checked />
+              <span>Recoger</span>
+            </label>
+            <label>
+              <input type="radio" name="delivery" value="Consultar entrega por Instagram" />
+              <span>Consultar entrega</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="order-summary" aria-live="polite">
+          <div class="summary-heading">
+            <span>Resumen de tu detalle</span>
+            <strong>Maison Steff</strong>
+          </div>
+          <dl>
+            <div><dt>Producto</dt><dd id="summary-product">Por elegir</dd></div>
+            <div><dt>Cantidad</dt><dd id="summary-quantity">1</dd></div>
+            <div><dt>Fecha</dt><dd id="summary-date">Por definir</dd></div>
+            <div><dt>Ocasión</dt><dd id="summary-occasion">Cumpleaños</dd></div>
+            <div><dt>Detalle</dt><dd id="summary-detail">Sin detalle especial</dd></div>
+          </dl>
+        </div>
+
+        <p class="form-note">Copiaremos tu mensaje antes de abrir el chat. Pégalo en Instagram; la reserva se confirma cuando Maison Steff responde.</p>
+        <div class="final-reservation-actions">
+          <a
+            class="button instagram-reservation-button"
+            href={site.instagramDmUrl}
+            target="_blank"
+            rel="noreferrer"
+            id="copy-open-instagram"
+          >
+            Copiar mensaje y abrir el chat <span>↗</span>
+          </a>
+          <div>
+            <button class="text-button previous-step" type="button" data-previous="2"><span>←</span> Editar detalles</button>
+            <button class="text-button reset-reservation" type="reset">Empezar de nuevo</button>
+          </div>
+        </div>
+        <p class="copy-status" id="copy-status" role="status"></p>
+      </section>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#reservation-form");
+  const panels = [...document.querySelectorAll<HTMLElement>("[data-step-panel]")];
+  const title = document.querySelector<HTMLElement>("#step-title");
+  const counter = document.querySelector<HTMLElement>("#current-step");
+  const progress = document.querySelector<HTMLElement>("#step-progress-bar");
+  const status = document.querySelector<HTMLElement>("#copy-status");
+  const quantity = document.querySelector<HTMLInputElement>("#quantity");
+  const dateField = document.querySelector<HTMLInputElement>("#date");
+  const stepTitles = ["Elige tu favorito", "Personaliza tu detalle", "Revisa tu solicitud"];
+  let activeStep = 1;
+
+  if (dateField) {
+    const today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    dateField.min = today.toISOString().split("T")[0];
+  }
+
+  const fieldForStep = (step: number) => {
+    if (step === 1) return form?.querySelector<HTMLInputElement>('input[name="product"]:checked');
+    if (step === 2) return dateField?.value ? dateField : null;
+    return form?.querySelector<HTMLInputElement>("#customer-name");
+  };
+
+  const canContinue = (step: number) => {
+    if (step === 1 && !fieldForStep(1)) {
+      form?.querySelector<HTMLElement>(".product-choice-grid")?.classList.add("needs-attention");
+      return false;
+    }
+    if (step === 2 && !dateField?.value) {
+      dateField?.reportValidity();
+      return false;
+    }
+    return true;
+  };
+
+  const setStep = (step: number) => {
+    activeStep = Math.max(1, Math.min(3, step));
+    panels.forEach((panel) => {
+      const active = Number(panel.dataset.stepPanel) === activeStep;
+      panel.hidden = !active;
+      panel.classList.toggle("active", active);
+    });
+    if (title) title.textContent = stepTitles[activeStep - 1];
+    if (counter) counter.textContent = `0${activeStep}`;
+    if (progress) progress.style.width = `${(activeStep / 3) * 100}%`;
+    form?.scrollIntoView({ behavior: "smooth", block: "center" });
+    updateSummary();
+  };
+
+  const formData = () => (form ? new FormData(form) : new FormData());
+
+  const formatDate = (value: FormDataEntryValue | null) => {
+    if (!value) return "Por definir";
+    return new Intl.DateTimeFormat("es-HN", { dateStyle: "long", timeZone: "UTC" }).format(
+      new Date(`${value.toString()}T00:00:00Z`),
+    );
+  };
+
+  const updateSummary = () => {
+    const data = formData();
+    const values: Record<string, string> = {
+      "summary-product": data.get("product")?.toString() || "Por elegir",
+      "summary-quantity": data.get("quantity")?.toString() || "1",
+      "summary-date": formatDate(data.get("date")),
+      "summary-occasion": data.get("occasion")?.toString() || "Por definir",
+      "summary-detail": data.get("dedication")?.toString() || "Sin detalle especial",
+    };
+    Object.entries(values).forEach(([id, value]) => {
+      const element = document.querySelector<HTMLElement>(`#${id}`);
+      if (element) element.textContent = value;
+    });
+    if (status) status.textContent = "";
+  };
+
+  const buildMessage = () => {
+    const data = formData();
+    const product = data.get("product") || "un detalle";
+    const quantityValue = Number(data.get("quantity") || 1);
+    const occasion = (data.get("occasion") || "una ocasión especial").toString().toLowerCase();
+    const dedication = data.get("dedication")?.toString().trim();
+    const delivery = data.get("delivery") === "Recoger"
+      ? "Prefiero recogerlo."
+      : "Me gustaría consultar la entrega.";
+    const message = [
+      "Hola Maison Steff, me gustaría reservar un detalle.",
+      "",
+      `Quiero ${product}.`,
+      quantityValue === 1 ? "Sería una unidad." : `Serían ${quantityValue} unidades.`,
+      `Lo necesito para el ${formatDate(data.get("date"))}.`,
+      `La ocasión es ${occasion}.`,
+      ...(dedication ? [`Y como detalle especial, quiero ${dedication}.`] : []),
+      delivery,
+      `Mi nombre es ${data.get("customerName") || "Por definir"}.`,
+      "",
+      "¿Me confirman disponibilidad y precio final? Gracias.",
+    ];
+    return message.join("\n");
+  };
+
+  document.querySelectorAll<HTMLButtonElement>(".next-step").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (canContinue(activeStep)) setStep(Number(button.dataset.next));
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>(".previous-step").forEach((button) => {
+    button.addEventListener("click", () => setStep(Number(button.dataset.previous)));
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-quantity]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!quantity) return;
+      quantity.value = String(Math.max(1, Number(quantity.value || 1) + Number(button.dataset.quantity)));
+      updateSummary();
+    });
+  });
+
+  form?.addEventListener("input", (event) => {
+    if ((event.target as HTMLInputElement).name === "product") {
+      form.querySelector(".product-choice-grid")?.classList.remove("needs-attention");
+    }
+    updateSummary();
+  });
+
+  form?.addEventListener("reset", () => {
+    setTimeout(() => setStep(1));
+  });
+
+  window.addEventListener("select-product", ((event: CustomEvent<string>) => {
+    const product = form?.querySelector<HTMLInputElement>(`input[name="product"][value="${CSS.escape(event.detail)}"]`);
+    if (product) {
+      product.checked = true;
+      setStep(2);
+    }
+  }) as EventListener);
+
+  document.querySelector<HTMLAnchorElement>("#copy-open-instagram")?.addEventListener("click", (event) => {
+    const customerName = form?.querySelector<HTMLInputElement>("#customer-name");
+    if (!customerName?.value.trim()) {
+      event.preventDefault();
+      customerName?.reportValidity();
+      return;
+    }
+    navigator.clipboard.writeText(buildMessage()).then(
+      () => {
+        if (status) status.textContent = "Mensaje copiado. Pégalo en el chat de Instagram que acabamos de abrir.";
+      },
+      () => {
+        if (status) status.textContent = "No pudimos copiar automáticamente. Revisa los datos e inténtalo nuevamente.";
+      },
+    );
+  });
+
+  updateSummary();
+</script>

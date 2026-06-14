@@ -1,0 +1,52 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+import { withBase } from "../utils/asset";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = site.title, description = site.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(withBase("images/real/pastel-mixto.jpg"), Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#fff8f2" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href={withBase("images/real/maison-steff-logo.png")} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <slot />
+    <script is:inline>
+      const progress = document.querySelector("#page-progress");
+      const updateProgress = () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        const value = total > 0 ? (window.scrollY / total) * 100 : 0;
+        if (progress) progress.style.width = `${Math.min(100, value)}%`;
+      };
+      window.addEventListener("scroll", updateProgress, { passive: true });
+      updateProgress();
+    </script>
+    <script src="../scripts/motion.ts"></script>
+  </body>
+</html>

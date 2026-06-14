@@ -1,0 +1,29 @@
+---
+import { site } from "../data/site";
+const heroWords = site.hero.title.split(" ");
+---
+
+<section class="hero-cinematic" id="inicio">
+  <div class="hero-stage">
+    <div class="hero-gradient" aria-hidden="true">
+      <span class="hero-orb hero-orb-one"></span>
+      <span class="hero-orb hero-orb-two"></span>
+      <span class="hero-orb hero-orb-three"></span>
+    </div>
+    <div class="hero-content">
+      <div class="hero-copy">
+        <p class="eyebrow">Pastelería boutique</p>
+        <h1>
+          {heroWords.map((word) => <span>{word}</span>)}
+        </h1>
+        <p class="hero-description">{site.hero.description}</p>
+        <div class="button-row">
+          <a class="button" href="#reservar">Reservar por Instagram <span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="#catalogo">Ver productos</a>
+        </div>
+        <p class="microcopy">Hecho por encargo · Cupos limitados</p>
+      </div>
+    </div>
+    <a class="hero-scroll-cue" href="#catalogo">Descubrir <span aria-hidden="true">↓</span></a>
+  </div>
+</section>

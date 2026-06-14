@@ -1,0 +1,45 @@
+---
+import { site } from "../data/site";
+
+const cards = [
+  {
+    label: "Cupos disponibles esta semana",
+    value: site.slots.available.toString().padStart(2, "0"),
+    note: "Agenda actualizada manualmente",
+  },
+  {
+    label: "Anticipación recomendada",
+    value: site.slots.leadTime,
+    note: "Reserva antes para fechas especiales",
+  },
+  {
+    label: "Pedidos grandes",
+    value: "Consultar",
+    note: site.slots.largeOrders,
+  },
+  {
+    label: "Estado de agenda",
+    value: site.slots.status,
+    note: "Sujeto a confirmación por Instagram",
+  },
+];
+---
+
+<section class="section slots-section" aria-labelledby="slots-title">
+  <div class="container">
+    <div class="section-heading centered-heading" data-reveal>
+      <p class="eyebrow">Agenda semanal</p>
+      <h2 id="slots-title">Pocos pedidos.<br />Mucho cuidado.</h2>
+      <p>Reserva con anticipación.</p>
+    </div>
+    <div class="slots-grid">
+      {cards.map((card) => (
+        <article class="slot-card" data-reveal>
+          <p>{card.label}</p>
+          <strong>{card.value}</strong>
+          <small>{card.note}</small>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

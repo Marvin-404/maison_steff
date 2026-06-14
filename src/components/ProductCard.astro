@@ -1,0 +1,28 @@
+---
+import type { Product } from "../data/products";
+import { withBase } from "../utils/asset";
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+---
+
+<article class="product-card" data-filters={product.filters.join(" ")} data-reveal>
+  <div class="product-image">
+    <img src={withBase(product.image)} alt={product.alt} width="680" height="760" loading="lazy" />
+    <span class="product-badge">{product.badge}</span>
+  </div>
+  <div class="product-content">
+    <p class="product-category">{product.category}</p>
+    <h3>{product.name}</h3>
+    <p>{product.description}</p>
+    <div class="product-footer">
+      <strong>{product.price}</strong>
+      <button class="text-button reserve-product" type="button" data-product={product.name}>
+        Reservar este <span aria-hidden="true">↗</span>
+      </button>
+    </div>
+  </div>
+</article>

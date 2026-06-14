@@ -1,0 +1,40 @@
+---
+import { withBase } from "../utils/asset";
+
+const details = [
+  ["Empaque cuidado", "Una presentación delicada desde el primer vistazo."],
+  ["Toques personales", "Cinta, sticker y dedicatoria para hacerlo tuyo."],
+  ["Hecho por encargo", "Cada pedido recibe atención y cuidado."],
+];
+---
+
+<section class="experience-section" id="experiencia">
+  <div class="container experience-grid">
+    <div class="experience-visual" data-reveal>
+      <img
+        src={withBase("images/real/empaque-pasteles.jpg")}
+        alt="Pasteles individuales Maison Steff listos en su empaque"
+        width="1050"
+        height="1200"
+        loading="lazy"
+      />
+      <div class="image-caption">Preparado con intención.<br />Entregado con encanto.</div>
+    </div>
+    <div class="experience-copy" data-reveal>
+      <p class="eyebrow">La presentación</p>
+      <h2>El detalle empieza desde el empaque.</h2>
+      <p class="lead">Una experiencia bonita antes del primer bocado.</p>
+      <div class="detail-list">
+        {details.map(([title, description]) => (
+          <article>
+            <div>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <a class="text-button" href="#reservar">Crear una solicitud <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>

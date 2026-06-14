@@ -1,0 +1,30 @@
+---
+import { withBase } from "../utils/asset";
+const galleryItems = [
+  { image: "images/real/pastel-fresa.jpg", text: "Listo para regalar", alt: "Pastel de fresa listo para regalar", class: "gallery-tall" },
+  { image: "images/real/pastel-vainilla.jpg", text: "Detalle personalizado", alt: "Pastel personalizado Maison Steff", class: "" },
+  { image: "images/real/pastel-chocolate.jpg", text: "Hecho por encargo", alt: "Pastel artesanal Maison Steff", class: "" },
+  { image: "images/real/empaque-pasteles.jpg", text: "Una pequeña colección", alt: "Selección de pasteles individuales Maison Steff", class: "gallery-wide" },
+  { image: "images/real/pastel-mixto.jpg", text: "Un gesto que se recuerda", alt: "Pastel decorado con flores rosa", class: "" },
+];
+---
+
+<section class="section gallery-section" id="galeria" aria-labelledby="gallery-title">
+  <div class="container">
+    <div class="section-heading split-heading" data-reveal>
+      <div>
+        <p class="eyebrow">Galería Maison</p>
+        <h2 id="gallery-title">Detalles dulces que se recuerdan.</h2>
+      </div>
+      <p>Sabores y presentaciones hechas para emocionar.</p>
+    </div>
+    <div class="gallery-grid">
+      {galleryItems.map((item) => (
+        <figure class:list={["gallery-item", item.class]} data-reveal>
+          <img src={withBase(item.image)} alt={item.alt} width="720" height="760" loading="lazy" />
+          <figcaption>{item.text}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,57 @@
+---
+import ProductCard from "./ProductCard.astro";
+import { products } from "../data/products";
+
+const filters = [
+  ["all", "Todos"],
+  ["regalo", "Para regalo"],
+  ["clasicos", "Clásicos"],
+  ["especiales", "Ediciones especiales"],
+  ["pedidos", "Más pedidos"],
+];
+---
+
+<section class="section catalog-section" id="catalogo">
+  <div class="container">
+    <div class="section-heading split-heading" data-reveal>
+      <div>
+        <p class="eyebrow">La colección</p>
+        <h2>Elige tu favorito.</h2>
+      </div>
+      <p>Preparados por encargo para regalar, celebrar o consentir.</p>
+    </div>
+    <div class="filter-row" role="group" aria-label="Filtrar productos">
+      {filters.map(([value, label], index) => (
+        <button class:list={["filter-button", { active: index === 0 }]} type="button" data-filter={value}>
+          {label}
+        </button>
+      ))}
+    </div>
+    <div class="product-grid">
+      {products.map((product) => <ProductCard product={product} />)}
+    </div>
+  </div>
+</section>
+
+<script>
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>(".filter-button");
+  const productCards = document.querySelectorAll<HTMLElement>(".product-card");
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.filter;
+      filterButtons.forEach((item) => item.classList.toggle("active", item === button));
+      productCards.forEach((card) => {
+        const visible = filter === "all" || card.dataset.filters?.split(" ").includes(filter ?? "");
+        card.hidden = !visible;
+      });
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>(".reserve-product").forEach((button) => {
+    button.addEventListener("click", () => {
+      window.dispatchEvent(new CustomEvent("select-product", { detail: button.dataset.product }));
+      document.querySelector("#reservar")?.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+</script>

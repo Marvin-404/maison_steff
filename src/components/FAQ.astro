@@ -1,0 +1,24 @@
+---
+import { faqs } from "../data/site";
+---
+
+<section class="section faq-section" id="preguntas">
+  <div class="container faq-grid">
+    <div class="faq-intro" data-reveal>
+      <p class="eyebrow">Antes de reservar</p>
+      <h2>Preguntas frecuentes.</h2>
+      <p>
+        Cada pedido se confirma personalmente para cuidar disponibilidad, detalles y presentación.
+      </p>
+      <a class="text-button" href="#reservar">Preparar mi solicitud <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="accordion" data-reveal>
+      {faqs.map((faq, index) => (
+        <details open={index === 0}>
+          <summary>{faq.question}<span aria-hidden="true">+</span></summary>
+          <p>{faq.answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
