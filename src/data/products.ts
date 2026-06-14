@@ -1,4 +1,5 @@
 export type ProductCategory = "regalo" | "clasicos" | "especiales" | "pedidos";
+export type CatalogFilter = ProductCategory | "all";
 
 export interface Product {
   id: string;
@@ -10,7 +11,16 @@ export interface Product {
   badge: string;
   image: string;
   alt: string;
+  available?: boolean;
 }
+
+export const catalogFilters: ReadonlyArray<{ value: CatalogFilter; label: string }> = [
+  { value: "all", label: "Todos" },
+  { value: "regalo", label: "Para regalo" },
+  { value: "clasicos", label: "Clásicos" },
+  { value: "especiales", label: "Ediciones especiales" },
+  { value: "pedidos", label: "Más pedidos" },
+];
 
 export const products: Product[] = [
   {
@@ -47,15 +57,15 @@ export const products: Product[] = [
     alt: "Pastel individual de chocolate Maison Steff",
   },
   {
-    id: "tres-leches",
-    name: "Pastel individual tres leches",
+    id: "mixto",
+    name: "Pastel individual mixto",
     category: "Clásico Maison",
     filters: ["clasicos", "pedidos"],
-    description: "Cremoso, ligero y especial.",
+    description: "Una combinación especial en cada detalle.",
     price: "Desde L ___",
     badge: "Más pedido",
-    image: "images/real/pastel-fresa.jpg",
-    alt: "Pastel artesanal individual Maison Steff",
+    image: "images/real/pastel-mixto.jpg",
+    alt: "Pastel individual mixto Maison Steff",
   },
   {
     id: "temporada",
@@ -80,3 +90,5 @@ export const products: Product[] = [
     alt: "Selección de pasteles individuales en empaque Maison Steff",
   },
 ];
+
+export const availableProducts = products.filter((product) => product.available !== false);

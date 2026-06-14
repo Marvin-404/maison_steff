@@ -9,7 +9,7 @@ interface Props {
 const { product } = Astro.props;
 ---
 
-<article class="product-card" data-filters={product.filters.join(" ")} data-reveal>
+<article class="product-card" data-product-id={product.id} data-filters={product.filters.join(" ")} data-reveal>
   <div class="product-image">
     <img src={withBase(product.image)} alt={product.alt} width="680" height="760" loading="lazy" />
     <span class="product-badge">{product.badge}</span>

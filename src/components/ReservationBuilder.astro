@@ -1,5 +1,5 @@
 ---
-import { products } from "../data/products";
+import { availableProducts } from "../data/products";
 import { site } from "../data/site";
 import { withBase } from "../utils/asset";
 ---
@@ -29,8 +29,8 @@ import { withBase } from "../utils/asset";
           <p>Selecciona una opción. Podrás consultar personalizaciones por mensaje.</p>
         </div>
         <div class="product-choice-grid">
-          {products.map((product) => (
-            <label class="product-choice">
+          {availableProducts.map((product) => (
+            <label class="product-choice" data-product-id={product.id}>
               <input type="radio" name="product" value={product.name} required />
               <img src={withBase(product.image)} alt={product.alt} width="680" height="760" loading="lazy" />
               <span>

@@ -1,14 +1,6 @@
 ---
 import ProductCard from "./ProductCard.astro";
-import { products } from "../data/products";
-
-const filters = [
-  ["all", "Todos"],
-  ["regalo", "Para regalo"],
-  ["clasicos", "Clásicos"],
-  ["especiales", "Ediciones especiales"],
-  ["pedidos", "Más pedidos"],
-];
+import { availableProducts, catalogFilters } from "../data/products";
 ---
 
 <section class="section catalog-section" id="catalogo">
@@ -21,14 +13,14 @@ const filters = [
       <p>Preparados por encargo para regalar, celebrar o consentir.</p>
     </div>
     <div class="filter-row" role="group" aria-label="Filtrar productos">
-      {filters.map(([value, label], index) => (
-        <button class:list={["filter-button", { active: index === 0 }]} type="button" data-filter={value}>
-          {label}
+      {catalogFilters.map((filter, index) => (
+        <button class:list={["filter-button", { active: index === 0 }]} type="button" data-filter={filter.value}>
+          {filter.label}
         </button>
       ))}
     </div>
     <div class="product-grid">
-      {products.map((product) => <ProductCard product={product} />)}
+      {availableProducts.map((product) => <ProductCard product={product} />)}
     </div>
   </div>
 </section>

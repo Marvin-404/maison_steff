@@ -24,14 +24,19 @@ npm run preview
 
 ## Editar contenido
 
-- Productos, precios, etiquetas y fotografías: `src/data/products.ts`
+- Productos, precios, etiquetas, filtros y disponibilidad: `src/data/products.ts`
+- Fotografías y composición de la galería: `src/data/gallery.ts`
 - Cupos, estado de agenda, Instagram, testimonios y preguntas: `src/data/site.ts`
 - Fotografías, logo y QR reales: `public/images/real/`
 - Colores, responsive y dirección visual: `src/styles/global.css`
 - Animaciones GSAP e intro de marca: `src/scripts/motion.ts`
 - Flujo guiado de reserva: `src/components/ReservationBuilder.astro`
 
-Para cambiar una fotografía, guarda el archivo optimizado en `public/images/real/` y actualiza su ruta en `src/data/products.ts`.
+Para agregar un sabor, guarda su fotografía optimizada en `public/images/real/` y agrega un objeto en `src/data/products.ts`. El catálogo y la reserva lo mostrarán automáticamente. Usa `available: false` para ocultar temporalmente un producto sin borrarlo.
+
+Para agregar una fotografía a la galería, agrega un objeto en `src/data/gallery.ts`. El campo opcional `layout` acepta `standard`, `tall` o `wide`.
+
+Mantén cada `id` único. Las rutas de imagen deben comenzar con `images/real/` y los filtros disponibles son `regalo`, `clasicos`, `especiales` y `pedidos`.
 
 Para cambiar Instagram, edita `instagramHandle`, `instagramUrl` e `instagramDmUrl` en `src/data/site.ts`.
 
