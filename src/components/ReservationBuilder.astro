@@ -239,7 +239,7 @@ import { withBase } from "../utils/asset";
       `Quiero ${product}.`,
       quantityValue === 1 ? "Sería una unidad." : `Serían ${quantityValue} unidades.`,
       `Lo necesito para el ${formatDate(data.get("date"))}.`,
-      `La ocasión es: ${occasion}.`,
+      `La ocasión es un ${occasion}.`,
       ...(dedication ? [`Y como detalle especial, quiero ${dedication}.`] : []),
       delivery,
       `Mi nombre es ${data.get("customerName") || "Por definir"}.`,
