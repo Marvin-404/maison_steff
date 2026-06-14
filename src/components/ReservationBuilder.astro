@@ -127,7 +127,7 @@ import { withBase } from "../utils/asset";
           </dl>
         </div>
 
-        <p class="form-note">Copiaremos tu mensaje antes de abrir el chat. Pégalo en Instagram; la reserva se confirma cuando Maison Steff responde.</p>
+        <p class="form-note">Copiaremos tu mensaje y te mostraremos cómo pegarlo antes de abrir Instagram. La reserva se confirma cuando Maison Steff responde.</p>
         <div class="final-reservation-actions">
           <a
             class="button instagram-reservation-button"
@@ -136,7 +136,7 @@ import { withBase } from "../utils/asset";
             rel="noreferrer"
             id="copy-open-instagram"
           >
-            Copiar mensaje y abrir el chat <span>↗</span>
+            Copiar mensaje y continuar <span>→</span>
           </a>
           <div>
             <button class="text-button previous-step" type="button" data-previous="2"><span>←</span> Editar detalles</button>
@@ -147,6 +147,22 @@ import { withBase } from "../utils/asset";
       </section>
     </form>
   </div>
+
+  <dialog class="paste-guide" id="paste-guide" aria-labelledby="paste-guide-title">
+    <div class="paste-guide-card">
+      <button class="paste-guide-close" type="button" aria-label="Cerrar indicación" data-close-paste-guide>×</button>
+      <span class="paste-guide-icon" aria-hidden="true">✓</span>
+      <p class="paste-guide-kicker">Mensaje copiado</p>
+      <h2 id="paste-guide-title">Tu solicitud está lista.</h2>
+      <p id="paste-guide-instruction">En Instagram, pega el mensaje en el chat y presiona enviar.</p>
+      <div class="paste-guide-actions">
+        <a class="button" href={site.instagramDmUrl} target="_blank" rel="noreferrer" id="open-instagram-after-copy">
+          Abrir Instagram <span aria-hidden="true">↗</span>
+        </a>
+        <button class="text-button" type="button" data-close-paste-guide>Volver al resumen</button>
+      </div>
+    </div>
+  </dialog>
 </section>
 
 <script>
@@ -156,6 +172,8 @@ import { withBase } from "../utils/asset";
   const counter = document.querySelector<HTMLElement>("#current-step");
   const progress = document.querySelector<HTMLElement>("#step-progress-bar");
   const status = document.querySelector<HTMLElement>("#copy-status");
+  const pasteGuide = document.querySelector<HTMLDialogElement>("#paste-guide");
+  const pasteInstruction = document.querySelector<HTMLElement>("#paste-guide-instruction");
   const quantity = document.querySelector<HTMLInputElement>("#quantity");
   const dateField = document.querySelector<HTMLInputElement>("#date");
   const stepTitles = ["Elige tu favorito", "Personaliza tu detalle", "Revisa tu solicitud"];
@@ -257,6 +275,50 @@ import { withBase } from "../utils/asset";
     return message.join("\n");
   };
 
+  const copyMessage = async (message: string) => {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(message);
+      return;
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = message;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.append(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    if (!copied) throw new Error("No se pudo copiar el mensaje");
+  };
+
+  const pasteHelp = () => {
+    const touchDevice = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
+    if (touchDevice) {
+      return "En Instagram, mantén presionado el campo del mensaje, toca “Pegar” y después presiona enviar.";
+    }
+    if (/Macintosh|Mac OS X/.test(navigator.userAgent)) {
+      return "En el chat de Instagram, presiona ⌘ + V o haz clic derecho y selecciona “Pegar”. Después presiona enviar.";
+    }
+    return "En el chat de Instagram, presiona Ctrl + V o haz clic derecho y selecciona “Pegar”. Después presiona enviar.";
+  };
+
+  const closePasteGuide = () => pasteGuide?.close();
+
+  document.querySelectorAll<HTMLButtonElement>("[data-close-paste-guide]").forEach((button) => {
+    button.addEventListener("click", closePasteGuide);
+  });
+
+  pasteGuide?.addEventListener("click", (event) => {
+    if (event.target === pasteGuide) closePasteGuide();
+  });
+
+  document.querySelector("#open-instagram-after-copy")?.addEventListener("click", () => {
+    closePasteGuide();
+    if (status) status.textContent = "Instagram abierto. Pega el mensaje copiado y presiona enviar.";
+  });
+
   document.querySelectorAll<HTMLButtonElement>(".next-step").forEach((button) => {
     button.addEventListener("click", () => {
       if (canContinue(activeStep)) setStep(Number(button.dataset.next));
@@ -295,15 +357,17 @@ import { withBase } from "../utils/asset";
   }) as EventListener);
 
   document.querySelector<HTMLAnchorElement>("#copy-open-instagram")?.addEventListener("click", (event) => {
+    event.preventDefault();
     const customerName = form?.querySelector<HTMLInputElement>("#customer-name");
     if (!customerName?.value.trim()) {
-      event.preventDefault();
       customerName?.reportValidity();
       return;
     }
-    navigator.clipboard.writeText(buildMessage()).then(
+    copyMessage(buildMessage()).then(
       () => {
-        if (status) status.textContent = "Mensaje copiado. Pégalo en el chat de Instagram que acabamos de abrir.";
+        if (pasteInstruction) pasteInstruction.textContent = pasteHelp();
+        if (status) status.textContent = "Mensaje copiado. Revisa la indicación para abrir Instagram.";
+        pasteGuide?.showModal();
       },
       () => {
         if (status) status.textContent = "No pudimos copiar automáticamente. Revisa los datos e inténtalo nuevamente.";
