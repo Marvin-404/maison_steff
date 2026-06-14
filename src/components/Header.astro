@@ -34,12 +34,14 @@ import { withBase } from "../utils/asset";
   const closeMenu = () => {
     menu?.classList.remove("open");
     menuToggle?.setAttribute("aria-expanded", "false");
+    menuToggle?.setAttribute("aria-label", "Abrir menú");
   };
 
   menuToggle?.addEventListener("click", () => {
     const open = !menu?.classList.contains("open");
     menu?.classList.toggle("open", open);
     menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
   });
 
   menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));

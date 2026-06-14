@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Abre `http://localhost:4321/maison-steff/`.
+Abre `http://localhost:4321/maison_steff/`.
 
 Para revisar la versión final compilada:
 
@@ -37,25 +37,21 @@ Para cambiar Instagram, edita `instagramHandle`, `instagramUrl` e `instagramDmUr
 
 ## GitHub Pages
 
-Repositorio existente: `https://github.com/Marvin-404/maison-steff`
+Repositorio oficial: `https://github.com/Marvin-404/maison_steff`
 
-El sitio es completamente estático. `astro.config.mjs` configura automáticamente el base path `/maison-steff/` y el workflow `.github/workflows/deploy.yml` publica cada cambio enviado a `main`.
+El sitio es completamente estático. `astro.config.mjs` configura automáticamente el base path `/maison_steff/` y el workflow `.github/workflows/deploy.yml` publica cada cambio enviado a `main`.
 
 En **Settings > Pages**, selecciona **GitHub Actions** como fuente. La reserva no requiere backend: genera una solicitud, la copia al portapapeles y abre `https://ig.me/m/maison_steff` para completar el pedido por DM.
 
-### Conectar esta carpeta al repositorio existente
+### Publicar cambios futuros
 
-Esta carpeta local todavía no contiene un repositorio Git. Ejecuta estos comandos una sola vez desde `Maison Steff`:
+Esta carpeta ya está conectada al repositorio oficial `Marvin-404/maison_steff` en la rama `main`. Para publicar cambios futuros:
 
 ```bash
-git init
-git remote add origin https://github.com/Marvin-404/maison-steff.git
-git fetch origin main
-git reset --mixed origin/main
-git branch -M main
+git status
 git add .
-git commit -m "Rediseño premium de Maison Steff"
-git push -u origin main
+git commit -m "Mejora la experiencia de Maison Steff"
+git push origin main
 ```
 
-El `reset --mixed` conserva los archivos locales actuales y conecta el nuevo commit con el historial existente del repositorio.
+Repositorio remoto verificado: `https://github.com/Marvin-404/maison_steff.git`.

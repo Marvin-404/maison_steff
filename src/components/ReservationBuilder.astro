@@ -25,14 +25,14 @@ import { withBase } from "../utils/asset";
       <section class="reservation-step active" data-step-panel="1" aria-labelledby="step-one-title">
         <div class="step-copy">
           <span>Primer paso</span>
-          <h3 id="step-one-title">¿Qué quieres regalar o disfrutar?</h3>
+          <h3 id="step-one-title" tabindex="-1">¿Qué quieres regalar o disfrutar?</h3>
           <p>Selecciona una opción. Podrás consultar personalizaciones por mensaje.</p>
         </div>
         <div class="product-choice-grid">
           {products.map((product) => (
             <label class="product-choice">
               <input type="radio" name="product" value={product.name} required />
-              <img src={withBase(product.image)} alt="" width="680" height="760" loading="lazy" />
+              <img src={withBase(product.image)} alt={product.alt} width="680" height="760" loading="lazy" />
               <span>
                 <small>{product.badge}</small>
                 <strong>{product.name}</strong>
@@ -51,7 +51,7 @@ import { withBase } from "../utils/asset";
       <section class="reservation-step" data-step-panel="2" aria-labelledby="step-two-title" hidden>
         <div class="step-copy">
           <span>Segundo paso</span>
-          <h3 id="step-two-title">Cuéntanos un poco más.</h3>
+          <h3 id="step-two-title" tabindex="-1">Cuéntanos un poco más.</h3>
           <p>Solo necesitamos los detalles esenciales para revisar tu solicitud.</p>
         </div>
         <div class="detail-fields">
@@ -92,7 +92,7 @@ import { withBase } from "../utils/asset";
       <section class="reservation-step" data-step-panel="3" aria-labelledby="step-three-title" hidden>
         <div class="step-copy">
           <span>Último paso</span>
-          <h3 id="step-three-title">Tu solicitud está casi lista.</h3>
+          <h3 id="step-three-title" tabindex="-1">Tu solicitud está casi lista.</h3>
           <p>Revisa el resumen. Maison Steff confirmará disponibilidad y precio final personalmente.</p>
         </div>
         <div class="field">
@@ -185,7 +185,7 @@ import { withBase } from "../utils/asset";
     return true;
   };
 
-  const setStep = (step: number) => {
+  const setStep = (step: number, focusHeading = true) => {
     activeStep = Math.max(1, Math.min(3, step));
     panels.forEach((panel) => {
       const active = Number(panel.dataset.stepPanel) === activeStep;
@@ -197,6 +197,14 @@ import { withBase } from "../utils/asset";
     if (progress) progress.style.width = `${(activeStep / 3) * 100}%`;
     form?.scrollIntoView({ behavior: "smooth", block: "center" });
     updateSummary();
+    if (focusHeading) {
+      requestAnimationFrame(() => {
+        panels
+          .find((panel) => Number(panel.dataset.stepPanel) === activeStep)
+          ?.querySelector<HTMLElement>("h3")
+          ?.focus({ preventScroll: true });
+      });
+    }
   };
 
   const formData = () => (form ? new FormData(form) : new FormData());
@@ -275,7 +283,7 @@ import { withBase } from "../utils/asset";
   });
 
   form?.addEventListener("reset", () => {
-    setTimeout(() => setStep(1));
+    setTimeout(() => setStep(1, false));
   });
 
   window.addEventListener("select-product", ((event: CustomEvent<string>) => {

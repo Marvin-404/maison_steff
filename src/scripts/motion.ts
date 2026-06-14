@@ -33,52 +33,36 @@ const initIntro = () => {
     .fromTo(".intro-scroll", { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.45 }, "-=0.18");
 
   gsap.set(".site-header", { autoAlpha: 0, y: -18 });
-  gsap.set(".hero-copy > *:not(h1)", { autoAlpha: 0, y: 54 });
-  gsap.set(".hero-copy h1 span", { autoAlpha: 0, y: 70, rotate: 2 });
+  gsap.set(".hero-copy > *:not(h1)", { autoAlpha: 1, y: 38 });
+  gsap.set(".hero-copy h1 span", { autoAlpha: 1, y: 54, rotate: 1.5 });
   gsap.set(".hero-scroll-cue", { autoAlpha: 0 });
 
   const introTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: document.body,
       start: "top top",
-      end: () => `+=${Math.max(window.innerHeight * 0.82, 560)}`,
-      scrub: 0.7,
+      end: () => `+=${Math.min(Math.max(window.innerHeight * 0.36, 280), 380)}`,
+      scrub: 0.18,
       invalidateOnRefresh: true,
     },
   });
 
   introTimeline
     .to(".intro-scroll", { autoAlpha: 0, y: 18, duration: 0.14 }, 0)
-    .to(".intro-ring-one", { scale: 1.45, autoAlpha: 0, duration: 0.55 }, 0)
-    .to(".intro-ring-two", { scale: 1.8, autoAlpha: 0, duration: 0.62 }, 0)
-    .to(".intro-logo-wrap img", { scale: 1.12, filter: "blur(7px)", duration: 0.64 }, 0.04)
-    .to(".intro-content", { yPercent: -38, scale: 0.9, autoAlpha: 0, duration: 0.58 }, 0.05)
-    .to(".intro-aurora-one", { xPercent: 45, yPercent: -22, scale: 1.3, duration: 0.7 }, 0)
-    .to(".intro-aurora-two", { xPercent: -40, yPercent: 30, scale: 1.25, duration: 0.7 }, 0)
-    .to(intro, { yPercent: -100, autoAlpha: 0, duration: 0.72, ease: "power2.inOut" }, 0.18)
-    .to(".site-header", { autoAlpha: 1, y: 0, duration: 0.22 }, 0.63)
-    .to(".hero-copy h1 span", { autoAlpha: 1, y: 0, rotate: 0, stagger: 0.035, duration: 0.3 }, 0.48)
-    .to(".hero-copy > *:not(h1)", { autoAlpha: 1, y: 0, stagger: 0.04, duration: 0.26 }, 0.56)
-    .to(".hero-scroll-cue", { autoAlpha: 1, duration: 0.16 }, 0.77);
+    .to(".intro-ring-one", { scale: 1.28, autoAlpha: 0, duration: 0.34 }, 0)
+    .to(".intro-ring-two", { scale: 1.5, autoAlpha: 0, duration: 0.38 }, 0)
+    .to(".intro-logo-wrap img", { scale: 1.04, filter: "blur(2px)", duration: 0.3 }, 0)
+    .to(".intro-content", { yPercent: -14, scale: 0.97, autoAlpha: 0.18, duration: 0.3 }, 0)
+    .to(".intro-aurora-one", { xPercent: 28, yPercent: -16, scale: 1.18, duration: 0.42 }, 0)
+    .to(".intro-aurora-two", { xPercent: -25, yPercent: 20, scale: 1.16, duration: 0.42 }, 0)
+    .to(intro, { yPercent: -100, duration: 0.46, ease: "power2.inOut" }, 0.02)
+    .to(".site-header", { autoAlpha: 1, y: 0, duration: 0.16 }, 0.22)
+    .to(".hero-copy h1 span", { y: 0, rotate: 0, stagger: 0.018, duration: 0.2 }, 0.14)
+    .to(".hero-copy > *:not(h1)", { y: 0, stagger: 0.02, duration: 0.18 }, 0.2)
+    .to(".hero-scroll-cue", { autoAlpha: 1, duration: 0.12 }, 0.38);
 };
 
 const initScrollMotion = () => {
-  gsap.utils.toArray<HTMLElement>("main section:not(#inicio) h2").forEach((heading) => {
-    gsap.fromTo(
-      heading,
-      { autoAlpha: 0, y: 64, filter: "blur(8px)" },
-      {
-        autoAlpha: 1,
-        y: 0,
-        filter: "blur(0px)",
-        duration: 1,
-        ease: "power3.out",
-        clearProps: "opacity,visibility,transform,filter",
-        scrollTrigger: { trigger: heading, start: "top 88%", once: true },
-      },
-    );
-  });
-
   gsap.utils
     .toArray<HTMLElement>(
       "main section:not(#inicio) [data-reveal]:not(.product-card):not(.slot-card):not(.testimonial-card):not(.gallery-item)",
@@ -86,31 +70,31 @@ const initScrollMotion = () => {
     .forEach((target) => {
       gsap.fromTo(
         target,
-        { autoAlpha: 0, y: 72, scale: 0.985 },
+        { autoAlpha: 0, y: 48, scale: 0.99 },
         {
           autoAlpha: 1,
           y: 0,
           scale: 1,
-          duration: 1.05,
+          duration: 0.68,
           ease: "power3.out",
           clearProps: "opacity,visibility,transform",
-          scrollTrigger: { trigger: target, start: "top 86%", once: true },
+          scrollTrigger: { trigger: target, start: "top 90%", once: true },
         },
       );
     });
 
   ScrollTrigger.batch(".product-card, .slot-card, .testimonial-card", {
-    start: "top 92%",
+    start: "top 94%",
     once: true,
     onEnter: (cards) =>
       gsap.fromTo(
         cards,
-        { autoAlpha: 0, y: 72, scale: 0.97 },
+        { autoAlpha: 0, y: 52, scale: 0.98 },
         {
           autoAlpha: 1,
           y: 0,
           scale: 1,
-          duration: 0.8,
+          duration: 0.62,
           stagger: 0.1,
           ease: "power3.out",
           clearProps: "opacity,visibility,transform",
@@ -137,7 +121,7 @@ const initScrollMotion = () => {
       ),
   });
 
-  ScrollTrigger.batch(".narrative-list article, .detail-list article, .faq-list details", {
+  ScrollTrigger.batch(".narrative-list article, .detail-list article, .accordion details", {
     start: "top 92%",
     once: true,
     onEnter: (items) =>
