@@ -1192,15 +1192,18 @@
   }
 
   .product-choice img {
-    width: 100%;
-    aspect-ratio: 1.3 / 1;
+    width: calc(100% - 0.8rem);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    margin: 0.4rem 0.4rem 0;
     object-fit: cover;
+    border-radius: 0.75rem;
   }
 
   .product-choice > span {
     display: grid;
-    gap: 0.25rem;
-    padding: 0.8rem;
+    gap: 0.2rem;
+    padding: 0.65rem 0.7rem 0.75rem;
   }
 
   .product-choice small {
@@ -1213,7 +1216,7 @@
 
   .product-choice strong {
     font-family: var(--serif);
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 400;
     line-height: 1.15;
   }
@@ -1940,6 +1943,10 @@
       grid-template-columns: 0.8fr 1.2fr;
     }
 
+    .product-choice-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .gallery-grid {
       grid-template-columns: repeat(2, 1fr);
       grid-auto-rows: 20rem;
@@ -2058,7 +2065,7 @@
     }
 
     .product-choice-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .slots-grid {
