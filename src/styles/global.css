@@ -55,6 +55,9 @@
     --shadow: 0 28px 80px rgba(76, 45, 41, 0.13);
     --serif: Georgia, "Times New Roman", serif;
     --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --text-caption: 0.75rem;
+    --text-small: 0.82rem;
+    --text-body-small: 0.9rem;
   }
 
   body {
@@ -133,7 +136,7 @@
     gap: 0.7rem;
     margin-bottom: 1.25rem;
     color: var(--pink-dark);
-    font-size: 0.7rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.19em;
     line-height: 1.3;
@@ -296,7 +299,7 @@
   .intro-tagline {
     margin-top: 0.2rem;
     color: var(--muted);
-    font-size: 0.65rem;
+    font-size: var(--text-caption);
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -311,7 +314,7 @@
     gap: 0.65rem;
     color: var(--muted);
     transform: translateX(-50%);
-    font-size: 0.65rem;
+    font-size: var(--text-caption);
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -388,7 +391,7 @@
 
   .brand strong {
     font-family: var(--serif);
-    font-size: 0.74rem;
+    font-size: 0.78rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
   }
@@ -427,7 +430,7 @@
     padding: 0.8rem 1rem;
     color: var(--brown);
     border-radius: 0.7rem;
-    font-size: 0.75rem;
+    font-size: var(--text-small);
     font-weight: 750;
   }
 
@@ -471,7 +474,7 @@
     border-radius: 999px;
     box-shadow: 0 12px 32px rgba(223, 85, 156, 0.24);
     cursor: pointer;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     font-weight: 850;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -487,7 +490,7 @@
   .button-small {
     min-height: 2.85rem;
     padding-inline: 1rem;
-    font-size: 0.68rem;
+    font-size: var(--text-caption);
   }
 
   .button-secondary {
@@ -542,7 +545,7 @@
     color: var(--brown-deep);
     background: transparent;
     cursor: pointer;
-    font-size: 0.7rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -679,7 +682,7 @@
   .microcopy {
     margin-top: 1.25rem;
     color: var(--muted);
-    font-size: 0.65rem;
+    font-size: var(--text-caption);
     font-weight: 800;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -695,7 +698,7 @@
     gap: 0.3rem;
     color: var(--muted);
     transform: translateX(-50%);
-    font-size: 0.65rem;
+    font-size: var(--text-caption);
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -743,7 +746,7 @@
   }
 
   .trust-item strong {
-    font-size: 0.7rem;
+    font-size: var(--text-caption);
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -775,7 +778,7 @@
     background: rgba(255, 253, 251, 0.92);
     border-radius: 999px;
     font-family: var(--serif);
-    font-size: 0.75rem;
+    font-size: var(--text-small);
     font-style: italic;
   }
 
@@ -823,7 +826,7 @@
   .narrative-list p,
   .detail-list p {
     color: var(--muted);
-    font-size: 0.77rem;
+    font-size: var(--text-body-small);
   }
 
   .catalog-section {
@@ -876,7 +879,7 @@
     border: 1px solid var(--line);
     border-radius: 999px;
     cursor: pointer;
-    font-size: 0.7rem;
+    font-size: var(--text-small);
     font-weight: 800;
   }
 
@@ -944,7 +947,7 @@
     color: var(--brown-deep);
     background: rgba(255, 253, 251, 0.9);
     border-radius: 999px;
-    font-size: 0.6rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -957,7 +960,7 @@
   .product-category {
     margin-bottom: 0.55rem;
     color: var(--pink-dark);
-    font-size: 0.62rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.13em;
     text-transform: uppercase;
@@ -966,7 +969,7 @@
   .product-content > p:not(.product-category) {
     margin-top: 0.7rem;
     color: var(--muted);
-    font-size: 0.82rem;
+    font-size: var(--text-body-small);
   }
 
   .product-footer {
@@ -1028,7 +1031,7 @@
     background: var(--brown-deep);
     border-radius: 0.8rem;
     font-family: var(--serif);
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     font-style: italic;
     line-height: 1.4;
   }
@@ -1083,7 +1086,7 @@
 
   .step-kicker {
     color: var(--pink-dark);
-    font-size: 0.6rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -1098,7 +1101,7 @@
   .step-counter {
     color: var(--muted);
     font-family: var(--serif);
-    font-size: 0.75rem;
+    font-size: var(--text-small);
     font-style: italic;
   }
 
@@ -1139,7 +1142,7 @@
 
   .step-copy > span {
     color: var(--pink-dark);
-    font-size: 0.6rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.13em;
     text-transform: uppercase;
@@ -1153,7 +1156,7 @@
   .step-copy p {
     max-width: 34rem;
     color: var(--muted);
-    font-size: 0.78rem;
+    font-size: var(--text-body-small);
   }
 
   .product-choice-grid {
@@ -1208,7 +1211,7 @@
 
   .product-choice small {
     color: var(--pink-dark);
-    font-size: 0.55rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -1216,14 +1219,14 @@
 
   .product-choice strong {
     font-family: var(--serif);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 400;
     line-height: 1.15;
   }
 
   .product-choice em {
     color: var(--muted);
-    font-size: 0.65rem;
+    font-size: var(--text-caption);
     font-style: normal;
     font-weight: 700;
   }
@@ -1240,7 +1243,7 @@
     background: var(--pink-dark);
     border: 2px solid white;
     border-radius: 50%;
-    font-size: 0.65rem;
+    font-size: var(--text-caption);
     font-style: normal;
     opacity: 0;
     transform: scale(0.7);
@@ -1276,7 +1279,7 @@
   .step-footer > p {
     max-width: 18rem;
     color: var(--muted);
-    font-size: 0.68rem;
+    font-size: 0.8rem;
   }
 
   .detail-fields {
@@ -1326,7 +1329,7 @@
 
   .choice-field legend {
     margin-bottom: 0.55rem;
-    font-size: 0.72rem;
+    font-size: var(--text-small);
     font-weight: 800;
   }
 
@@ -1354,7 +1357,7 @@
     background: var(--cream);
     border: 1px solid var(--line);
     border-radius: 999px;
-    font-size: 0.68rem;
+    font-size: 0.8rem;
     font-weight: 750;
     transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
   }
@@ -1385,7 +1388,7 @@
 
   .summary-heading span {
     color: var(--pink-dark);
-    font-size: 0.55rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -1393,7 +1396,7 @@
 
   .summary-heading strong {
     font-family: var(--serif);
-    font-size: 0.85rem;
+    font-size: var(--text-body-small);
     font-weight: 400;
   }
 
@@ -1416,7 +1419,7 @@
 
   .order-summary dt {
     color: var(--muted);
-    font-size: 0.57rem;
+    font-size: var(--text-caption);
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1425,7 +1428,7 @@
   .order-summary dd {
     margin: 0;
     font-family: var(--serif);
-    font-size: 0.8rem;
+    font-size: var(--text-body-small);
   }
 
   .final-reservation-actions {
@@ -1466,13 +1469,13 @@
   .field legend {
     display: block;
     margin-bottom: 0.4rem;
-    font-size: 0.68rem;
+    font-size: var(--text-small);
     font-weight: 800;
   }
 
   .field label span {
     color: var(--rose);
-    font-size: 0.62rem;
+    font-size: var(--text-caption);
   }
 
   .field input,
@@ -1497,14 +1500,14 @@
     background: var(--blush);
     border-left: 3px solid var(--pink);
     border-radius: 0.4rem;
-    font-size: 0.72rem;
+    font-size: var(--text-small);
   }
 
   .copy-status {
     min-height: 1.2rem;
     margin-top: 0.8rem;
     color: #7a4b65;
-    font-size: 0.72rem;
+    font-size: var(--text-small);
     font-weight: 700;
   }
 
@@ -1569,7 +1572,7 @@
 
   .paste-guide-kicker {
     color: var(--pink-dark);
-    font-size: 0.68rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -1585,7 +1588,7 @@
     max-width: 27rem;
     margin-inline: auto;
     color: var(--muted);
-    font-size: 0.88rem;
+    font-size: 0.95rem;
   }
 
   .paste-guide-actions {
@@ -1631,7 +1634,7 @@
     position: relative;
     max-width: 14rem;
     color: var(--muted);
-    font-size: 0.68rem;
+    font-size: var(--text-caption);
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1649,7 +1652,7 @@
 
   .slot-card small {
     color: var(--pink-dark);
-    font-size: 0.7rem;
+    font-size: var(--text-small);
     font-weight: 750;
   }
 
@@ -1713,7 +1716,7 @@
 
   .stars {
     color: var(--gold);
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     letter-spacing: 0.18em;
   }
 
@@ -1730,12 +1733,12 @@
   }
 
   .testimonial-card figcaption strong {
-    font-size: 0.72rem;
+    font-size: var(--text-small);
   }
 
   .testimonial-card figcaption span {
     color: var(--muted);
-    font-size: 0.68rem;
+    font-size: 0.8rem;
   }
 
   .faq-section {
@@ -1791,7 +1794,7 @@
     max-width: 38rem;
     padding: 0 2rem 1.3rem 0;
     color: var(--muted);
-    font-size: 0.8rem;
+    font-size: var(--text-body-small);
   }
 
   .final-cta {
@@ -1829,7 +1832,7 @@
     margin-top: 2rem;
     color: var(--pink-light);
     font-family: var(--serif);
-    font-size: 0.78rem;
+    font-size: 0.88rem;
     font-style: italic;
   }
 
@@ -1848,14 +1851,14 @@
   .footer-brand > p {
     max-width: 23rem;
     margin-top: 1rem;
-    font-size: 0.8rem;
+    font-size: var(--text-body-small);
   }
 
   .footer-grid h2 {
     margin-bottom: 0.8rem;
     color: var(--brown-deep);
     font-family: var(--sans);
-    font-size: 0.68rem;
+    font-size: var(--text-caption);
     font-weight: 850;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -1865,7 +1868,7 @@
   .footer-grid > div:not(.footer-brand) p {
     display: block;
     margin-block: 0.45rem;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
   }
 
   .footer-grid > div:not(.footer-brand) a {
@@ -1904,7 +1907,7 @@
     gap: 0.5rem 1rem;
     padding-block: 1.2rem;
     border-top: 1px solid var(--line);
-    font-size: 0.65rem;
+    font-size: var(--text-caption);
   }
 
   @keyframes scroll-pulse {
@@ -1991,7 +1994,7 @@
 
     .main-nav a {
       padding: 0.7rem 0.65rem;
-      font-size: 0.68rem;
+      font-size: var(--text-caption);
     }
 
     .button.header-cta {
