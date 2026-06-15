@@ -53,6 +53,8 @@
     --muted: #886b65;
     --line: rgba(106, 74, 61, 0.15);
     --shadow: 0 28px 80px rgba(76, 45, 41, 0.13);
+    --heading-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 0.12em 0.34em rgba(106, 74, 61, 0.1);
+    --heading-shadow-light: 0 0.1em 0.3em rgba(31, 18, 15, 0.26);
     --serif: Georgia, "Times New Roman", serif;
     --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --text-caption: 0.85rem;
@@ -75,6 +77,7 @@
     font-family: var(--serif);
     font-weight: 400;
     line-height: 0.98;
+    text-shadow: var(--heading-shadow);
     text-wrap: balance;
   }
 
@@ -407,22 +410,17 @@
     top: calc(100% + 0.55rem);
     right: 1rem;
     left: 1rem;
-    display: grid;
+    display: none;
     padding: 0.6rem;
     background: rgba(255, 250, 251, 0.98);
     border: 1px solid white;
     border-radius: 1rem;
     box-shadow: var(--shadow);
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(-0.6rem);
-    transition: opacity 200ms ease, transform 200ms ease;
   }
 
   .main-nav.open {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
+    display: grid;
+    animation: menu-enter 200ms ease both;
   }
 
   .main-nav a {
@@ -644,7 +642,7 @@
     max-width: 10ch;
     margin-inline: auto;
     color: var(--brown-deep);
-    text-shadow: 0 12px 50px rgba(247, 134, 194, 0.16);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.72), 0 12px 50px rgba(247, 134, 194, 0.2);
   }
 
   .hero-copy h1 span {
@@ -1034,6 +1032,7 @@
     font-size: 0.98rem;
     font-style: italic;
     line-height: 1.4;
+    text-shadow: 0 1px 8px rgba(31, 18, 15, 0.3);
   }
 
   .experience-copy .text-button {
@@ -1312,6 +1311,7 @@
     border-block: 0;
     border-radius: 0;
     text-align: center;
+    appearance: textfield;
     -moz-appearance: textfield;
   }
 
@@ -1701,6 +1701,7 @@
     font-family: var(--serif);
     font-size: 1rem;
     font-style: italic;
+    text-shadow: 0 2px 12px rgba(31, 18, 15, 0.55);
   }
 
   .testimonials-section {
@@ -1811,6 +1812,11 @@
 
   .final-cta-inner {
     text-align: center;
+  }
+
+  .reservation-intro h2,
+  .final-cta-inner h2 {
+    text-shadow: var(--heading-shadow-light);
   }
 
   .final-cta-inner h2 {
@@ -1924,6 +1930,11 @@
     from { opacity: 0; transform: translateY(1.1rem) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
+
+  @keyframes menu-enter {
+    from { opacity: 0; transform: translateY(-0.5rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }
 
 @layer responsive {
@@ -1977,7 +1988,8 @@
       display: none;
     }
 
-    .main-nav {
+    .main-nav,
+    .main-nav.open {
       position: static;
       display: flex;
       flex: 1;
@@ -1987,9 +1999,7 @@
       background: transparent;
       border: 0;
       box-shadow: none;
-      opacity: 1;
-      pointer-events: auto;
-      transform: none;
+      animation: none;
     }
 
     .main-nav a {
@@ -2131,6 +2141,21 @@
     .order-summary dl > div {
       grid-template-columns: 1fr;
       gap: 0.2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
 

@@ -196,9 +196,12 @@ import { withBase } from "../utils/asset";
       form?.querySelector<HTMLElement>(".product-choice-grid")?.classList.add("needs-attention");
       return false;
     }
-    if (step === 2 && !dateField?.value) {
-      dateField?.reportValidity();
-      return false;
+    if (step === 2) {
+      const invalidField = [quantity, dateField].find((field) => field && !field.checkValidity());
+      if (invalidField) {
+        invalidField.reportValidity();
+        return false;
+      }
     }
     return true;
   };

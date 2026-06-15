@@ -4,9 +4,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const intro = document.querySelector<HTMLElement>("#brand-intro");
-document.documentElement.classList.add("motion-enabled");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-history.scrollRestoration = "manual";
 const resetToIntro = () => {
   if (window.location.hash) {
     history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
@@ -16,12 +15,6 @@ const resetToIntro = () => {
   ScrollTrigger.update();
   requestAnimationFrame(() => document.documentElement.style.removeProperty("scroll-behavior"));
 };
-
-resetToIntro();
-window.addEventListener("pageshow", resetToIntro);
-window.addEventListener("load", resetToIntro, { once: true });
-requestAnimationFrame(() => requestAnimationFrame(resetToIntro));
-window.setTimeout(resetToIntro, 120);
 
 const initIntro = () => {
   if (!intro) return;
@@ -170,5 +163,14 @@ const initScrollMotion = () => {
   });
 };
 
-initIntro();
-initScrollMotion();
+if (!reduceMotion) {
+  document.documentElement.classList.add("motion-enabled");
+  history.scrollRestoration = "manual";
+  resetToIntro();
+  window.addEventListener("pageshow", resetToIntro);
+  window.addEventListener("load", resetToIntro, { once: true });
+  requestAnimationFrame(() => requestAnimationFrame(resetToIntro));
+  window.setTimeout(resetToIntro, 120);
+  initIntro();
+  initScrollMotion();
+}

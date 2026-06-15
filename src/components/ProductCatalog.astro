@@ -14,7 +14,12 @@ import { availableProducts, catalogFilters } from "../data/products";
     </div>
     <div class="filter-row" role="group" aria-label="Filtrar productos">
       {catalogFilters.map((filter, index) => (
-        <button class:list={["filter-button", { active: index === 0 }]} type="button" data-filter={filter.value}>
+        <button
+          class:list={["filter-button", { active: index === 0 }]}
+          type="button"
+          data-filter={filter.value}
+          aria-pressed={index === 0 ? "true" : "false"}
+        >
           {filter.label}
         </button>
       ))}
@@ -32,7 +37,11 @@ import { availableProducts, catalogFilters } from "../data/products";
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const filter = button.dataset.filter;
-      filterButtons.forEach((item) => item.classList.toggle("active", item === button));
+      filterButtons.forEach((item) => {
+        const active = item === button;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
       productCards.forEach((card) => {
         const visible = filter === "all" || card.dataset.filters?.split(" ").includes(filter ?? "");
         card.hidden = !visible;
