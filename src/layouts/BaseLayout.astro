@@ -16,11 +16,16 @@ const ogImage = new URL(withBase("images/real/pastel-mixto.jpg"), Astro.site);
 <!doctype html>
 <html lang="es">
   <head>
+    <script is:inline>
+      document.documentElement.classList.add("motion-intro", "motion-preload");
+      history.scrollRestoration = "manual";
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="theme-color" content="#fff8f2" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preload" as="image" href={withBase("images/real/maison-steff-logo.png")} fetchpriority="high" />
     <link rel="icon" type="image/png" href={withBase("images/real/maison-steff-logo.png")} />
     <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />

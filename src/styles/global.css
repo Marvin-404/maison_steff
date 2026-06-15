@@ -54,9 +54,9 @@
     --line: rgba(106, 74, 61, 0.15);
     --shadow: 0 28px 80px rgba(76, 45, 41, 0.13);
     --heading-shadow:
-      0 2px 0 rgba(255, 255, 255, 0.72),
-      0 0.08em 0.16em rgba(106, 74, 61, 0.2),
-      0 0.25em 0.6em rgba(217, 156, 171, 0.2);
+      0 3px 0 rgba(255, 255, 255, 0.78),
+      0 0.12em 0.2em rgba(106, 74, 61, 0.3),
+      0 0.35em 0.75em rgba(217, 156, 171, 0.28);
     --heading-shadow-light:
       0 2px 0 rgba(62, 42, 34, 0.24),
       0 0.12em 0.24em rgba(31, 18, 15, 0.42),
@@ -78,8 +78,7 @@
   }
 
   h1,
-  h2,
-  h3 {
+  h2 {
     font-family: var(--serif);
     font-weight: 400;
     line-height: 0.98;
@@ -103,7 +102,12 @@
   }
 
   h3 {
+    font-family: var(--serif);
     font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 0.98;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7), 0 0.2em 0.45em rgba(106, 74, 61, 0.18);
+    text-wrap: balance;
   }
 
   a {
@@ -190,13 +194,38 @@
     overflow: hidden;
     pointer-events: none;
     color: var(--brown-deep);
+    contain: paint;
     background:
       radial-gradient(circle at 50% 46%, rgba(255, 255, 255, 0.92), transparent 24%),
       linear-gradient(135deg, #fffdfb 4%, #ffe8f0 48%, #f7c0d9 100%);
   }
 
-  .motion-enabled .brand-intro {
+  .motion-intro .brand-intro {
     display: grid;
+  }
+
+  .motion-preload .site-header,
+  .motion-preload .hero-copy > *,
+  .motion-preload .hero-scroll-cue,
+  .motion-preload [data-reveal] {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .motion-intro .intro-logo-wrap {
+    animation: intro-logo-enter 820ms 80ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  .motion-intro .intro-name {
+    animation: intro-copy-enter 500ms 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  .motion-intro .intro-tagline {
+    animation: intro-copy-enter 500ms 510ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  .motion-intro .intro-scroll {
+    animation: intro-scroll-enter 400ms 680ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 
   .intro-glow {
@@ -289,6 +318,7 @@
     display: flex;
     align-items: baseline;
     gap: 0.4rem;
+    text-shadow: var(--heading-shadow);
   }
 
   .intro-name strong {
@@ -326,6 +356,7 @@
     font-size: var(--text-caption);
     font-weight: 800;
     letter-spacing: 0.1em;
+    text-align: center;
     text-transform: uppercase;
   }
 
@@ -587,6 +618,7 @@
     position: absolute;
     inset: 0;
     overflow: hidden;
+    contain: paint;
   }
 
   .hero-gradient::after {
@@ -649,21 +681,14 @@
     margin-inline: auto;
     color: var(--brown-deep);
     text-shadow:
-      0 2px 0 rgba(255, 255, 255, 0.82),
-      0 0.08em 0.16em rgba(106, 74, 61, 0.2),
-      0 0.28em 0.72em rgba(247, 134, 194, 0.3);
+      0 3px 0 rgba(255, 255, 255, 0.88),
+      0 0.12em 0.22em rgba(106, 74, 61, 0.32),
+      0 0.42em 0.9em rgba(247, 134, 194, 0.36);
   }
 
   .hero-copy h1 span {
     display: inline-block;
     margin-right: 0.18em;
-  }
-
-  .intro-content,
-  .intro-logo-wrap,
-  .brand-intro,
-  .hero-copy h1 span {
-    will-change: transform, opacity;
   }
 
   .hero-copy h1 span:last-child {
@@ -1928,6 +1953,21 @@
   @keyframes scroll-pulse {
     0%, 100% { opacity: 0.35; transform: scaleY(0.55); }
     50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  @keyframes intro-logo-enter {
+    from { visibility: hidden; opacity: 0; transform: scale(0.82); }
+    to { visibility: visible; opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes intro-copy-enter {
+    from { visibility: hidden; opacity: 0; transform: translateY(1.1rem); }
+    to { visibility: visible; opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes intro-scroll-enter {
+    from { visibility: hidden; opacity: 0; transform: translate(-50%, 1.1rem); }
+    to { visibility: visible; opacity: 1; transform: translate(-50%, 0); }
   }
 
   @keyframes step-enter {
