@@ -4,7 +4,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const intro = document.querySelector<HTMLElement>("#brand-intro");
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const resetToIntro = () => {
   if (window.location.hash) {
@@ -132,45 +131,39 @@ const initScrollMotion = () => {
       ),
   });
 
-  ScrollTrigger.matchMedia({
-    "(min-width: 800px)": () => {
-      gsap.to(".narrative-photo img", {
-        yPercent: 8,
-        scale: 1.06,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".narrative",
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.8,
-        },
-      });
-
-      gsap.to(".hero-orb-one", {
-        xPercent: 26,
-        yPercent: 18,
-        ease: "none",
-        scrollTrigger: { trigger: "#inicio", start: "top top", end: "bottom top", scrub: 1 },
-      });
-
-      gsap.to(".hero-orb-two", {
-        xPercent: -22,
-        yPercent: -18,
-        ease: "none",
-        scrollTrigger: { trigger: "#inicio", start: "top top", end: "bottom top", scrub: 1 },
-      });
+  gsap.to(".narrative-photo img", {
+    yPercent: 8,
+    scale: 1.06,
+    ease: "none",
+    scrollTrigger: {
+      trigger: ".narrative",
+      start: "top bottom",
+      end: "bottom top",
+      scrub: 0.8,
     },
+  });
+
+  gsap.to(".hero-orb-one", {
+    xPercent: 26,
+    yPercent: 18,
+    ease: "none",
+    scrollTrigger: { trigger: "#inicio", start: "top top", end: "bottom top", scrub: 1 },
+  });
+
+  gsap.to(".hero-orb-two", {
+    xPercent: -22,
+    yPercent: -18,
+    ease: "none",
+    scrollTrigger: { trigger: "#inicio", start: "top top", end: "bottom top", scrub: 1 },
   });
 };
 
-if (!reduceMotion) {
-  document.documentElement.classList.add("motion-enabled");
-  history.scrollRestoration = "manual";
-  resetToIntro();
-  window.addEventListener("pageshow", resetToIntro);
-  window.addEventListener("load", resetToIntro, { once: true });
-  requestAnimationFrame(() => requestAnimationFrame(resetToIntro));
-  window.setTimeout(resetToIntro, 120);
-  initIntro();
-  initScrollMotion();
-}
+document.documentElement.classList.add("motion-enabled");
+history.scrollRestoration = "manual";
+resetToIntro();
+window.addEventListener("pageshow", resetToIntro);
+window.addEventListener("load", resetToIntro, { once: true });
+requestAnimationFrame(() => requestAnimationFrame(resetToIntro));
+window.setTimeout(resetToIntro, 120);
+initIntro();
+initScrollMotion();
