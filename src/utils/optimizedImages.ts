@@ -22,6 +22,18 @@ const optimizedImages: Record<string, OptimizedImage> = {
   "images/real/empaque-pasteles.jpg": {
     webp: image("empaque-pasteles", [360, 540, 720, 960, 1050]),
   },
+  "images/real/pastel-chocolate.jpg": {
+    webp: image("pastel-chocolate", [360, 540, 736]),
+  },
+  "images/real/pastel-fresa.jpg": {
+    webp: image("pastel-fresa", [360, 540, 720, 960, 1200]),
+  },
+  "images/real/pastel-mixto.jpg": {
+    webp: image("pastel-mixto", [360, 540, 736]),
+  },
+  "images/real/pastel-vainilla.jpg": {
+    webp: image("pastel-vainilla", [360, 540, 720, 960, 1080]),
+  },
   "images/real/amarillo-margaritas.jpg": {
     webp: image("amarillo-margaritas", [360, 540, 720, 929]),
   },

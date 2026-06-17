@@ -1,6 +1,8 @@
 ---
 import ProductCard from "./ProductCard.astro";
 import { availableProducts, catalogFilters } from "../data/products";
+import { proposals } from "../data/proposals";
+import OptimizedPicture from "./OptimizedPicture.astro";
 ---
 
 <section class="section catalog-section" id="catalogo">
@@ -26,6 +28,33 @@ import { availableProducts, catalogFilters } from "../data/products";
     </div>
     <div class="product-grid">
       {availableProducts.map((product) => <ProductCard product={product} />)}
+    </div>
+    <div class="proposal-panel" data-reveal>
+      <div class="proposal-heading">
+        <div>
+          <p class="eyebrow">Ideas visuales</p>
+          <h3>Desliza para ver más propuestas.</h3>
+        </div>
+        <p>Elige una referencia o envía una idea parecida por Instagram para confirmar si se puede realizar.</p>
+      </div>
+      <div class="proposal-rail" aria-label="Propuestas visuales de pasteles" tabindex="0">
+        {proposals.map((proposal) => (
+          <button class="proposal-card" type="button" data-design={proposal.title}>
+            <OptimizedPicture
+              src={proposal.image}
+              alt={proposal.alt}
+              width="720"
+              height="760"
+              loading="lazy"
+              sizes="(min-width: 64rem) 15rem, 62vw"
+            />
+            <span>
+              <small>{proposal.category}</small>
+              <strong>{proposal.title}</strong>
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   </div>
 </section>
@@ -57,6 +86,14 @@ import { availableProducts, catalogFilters } from "../data/products";
   document.querySelectorAll<HTMLButtonElement>(".reserve-product").forEach((button) => {
     button.addEventListener("click", () => {
       window.dispatchEvent(new CustomEvent("select-product", { detail: button.dataset.product }));
+      const reservation = document.querySelector("#reservar");
+      if (reservation) reservation.scrollIntoView({ behavior: motionSafe ? "smooth" : "auto" });
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>(".proposal-card").forEach((button) => {
+    button.addEventListener("click", () => {
+      window.dispatchEvent(new CustomEvent("select-design", { detail: button.dataset.design }));
       const reservation = document.querySelector("#reservar");
       if (reservation) reservation.scrollIntoView({ behavior: motionSafe ? "smooth" : "auto" });
     });

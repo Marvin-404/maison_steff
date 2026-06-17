@@ -1062,6 +1062,102 @@
     font-weight: 400;
   }
 
+  .proposal-panel {
+    margin-top: 2.2rem;
+    margin-top: clamp(2.2rem, 5vw, 4rem);
+  }
+
+  .proposal-heading {
+    display: grid;
+    align-items: end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .proposal-heading h3 {
+    margin-top: 0.25rem;
+    font-size: 1.75rem;
+    font-size: clamp(1.75rem, 4vw, 3.2rem);
+  }
+
+  .proposal-heading > p {
+    max-width: 32rem;
+    color: var(--muted);
+    font-size: var(--text-body-small);
+  }
+
+  .proposal-rail,
+  .inspiration-rail {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.85rem;
+    margin-inline: -1rem;
+    padding: 0.2rem 1rem 1rem;
+    scroll-padding-inline: 1rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .proposal-card,
+  .inspiration-choice {
+    position: relative;
+    flex: 0 0 min(72vw, 16rem);
+    overflow: hidden;
+    min-width: 0;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(106, 74, 61, 0.11);
+    border-radius: 1rem;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .proposal-card:hover,
+  .inspiration-choice:hover {
+    transform: translateY(-0.2rem);
+    border-color: rgba(223, 85, 156, 0.34);
+    box-shadow: 0 12px 30px rgba(106, 74, 61, 0.1);
+  }
+
+  .proposal-card picture,
+  .inspiration-choice picture {
+    width: 100%;
+    background: var(--cream);
+  }
+
+  .proposal-card img {
+    width: 100%;
+    height: 13.5rem;
+    object-fit: cover;
+  }
+
+  .proposal-card > span,
+  .inspiration-choice > span {
+    display: grid;
+    gap: 0.18rem;
+    padding: 0.75rem 0.8rem 0.85rem;
+  }
+
+  .proposal-card small,
+  .inspiration-choice small {
+    color: var(--pink-dark);
+    font-size: var(--text-caption);
+    font-weight: 850;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .proposal-card strong,
+  .inspiration-choice strong {
+    color: var(--brown-deep);
+    font-family: var(--serif);
+    font-size: 1.04rem;
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
   .experience-section {
     min-height: 100vh;
     min-height: 100svh;
@@ -1427,6 +1523,11 @@
     font-weight: 800;
   }
 
+  .choice-field legend span {
+    color: var(--rose);
+    font-size: var(--text-caption);
+  }
+
   .choice-chips {
     display: flex;
     flex-wrap: wrap;
@@ -1440,6 +1541,46 @@
   .choice-chips input {
     position: absolute;
     opacity: 0;
+  }
+
+  .inspiration-field {
+    margin-top: 0.8rem;
+  }
+
+  .inspiration-choice {
+    flex-basis: min(48vw, 10.5rem);
+    background: var(--cream);
+  }
+
+  .inspiration-choice input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .inspiration-choice img {
+    width: 100%;
+    height: 7.4rem;
+    object-fit: cover;
+  }
+
+  .inspiration-choice > span {
+    padding: 0.55rem 0.6rem 0.65rem;
+  }
+
+  .inspiration-choice strong {
+    font-size: 0.94rem;
+  }
+
+  .inspiration-choice.is-selected,
+  .inspiration-choice:has(input:checked) {
+    border-color: var(--pink-dark);
+    box-shadow: 0 0 0 2px rgba(223, 85, 156, 0.12);
+  }
+
+  .inspiration-choice:focus-within,
+  .inspiration-choice:has(input:focus-visible) {
+    outline: 3px solid var(--pink);
+    outline-offset: 3px;
   }
 
   .choice-chips span {
@@ -1774,6 +1915,7 @@
   .gallery-item {
     position: relative;
     overflow: hidden;
+    background: var(--cream);
     border-radius: 1.1rem;
   }
 
@@ -1787,12 +1929,12 @@
   .gallery-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 600ms ease;
+    object-fit: contain;
+    transition: opacity 180ms ease;
   }
 
   .gallery-item:hover img {
-    transform: scale(1.045);
+    transform: none;
   }
 
   .gallery-item figcaption {
@@ -2178,6 +2320,18 @@
       grid-template-columns: 1.4fr 0.6fr;
     }
 
+    .proposal-heading {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    .proposal-card {
+      flex-basis: 17rem;
+    }
+
+    .proposal-card img {
+      height: 15rem;
+    }
+
     .product-grid {
       grid-template-columns: repeat(3, 1fr);
     }
@@ -2200,6 +2354,14 @@
 
     .product-choice-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .inspiration-choice {
+      flex-basis: 10rem;
+    }
+
+    .inspiration-choice img {
+      height: 8rem;
     }
 
     .slots-grid {
@@ -2270,6 +2432,8 @@
     .product-card,
     .product-image img,
     .product-choice,
+    .proposal-card,
+    .inspiration-choice,
     .gallery-item img,
     .slot-card {
       transition-duration: 180ms;
@@ -2277,6 +2441,8 @@
 
     .product-card:hover,
     .product-choice:hover,
+    .proposal-card:hover,
+    .inspiration-choice:hover,
     .slot-card:hover {
       transform: none;
     }
