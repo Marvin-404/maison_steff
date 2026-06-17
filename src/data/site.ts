@@ -55,7 +55,7 @@ export const faqs = [
   {
     question: "¿Puedo personalizar la dedicatoria?",
     answer:
-      "Sí. Puedes incluir una dedicatoria breve, contar tu idea de diseño o enviar una imagen de referencia por Instagram para confirmar si se puede realizar.",
+      "Sí. Puedes incluir una dedicatoria breve, contar tu idea de diseño o enviar una imagen de referencia por Instagram para confirmar si se puede realizar. Por ahora trabajamos principalmente con chantilly; fondant y colores más vivos se consultarán más adelante.",
   },
   {
     question: "¿Qué rellenos puedo elegir?",
