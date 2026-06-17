@@ -7,6 +7,9 @@ ScrollTrigger.config({ ignoreMobileResize: true, limitCallbacks: true });
 const root = document.documentElement;
 const intro = document.querySelector<HTMLElement>("#brand-intro");
 const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+const isReducedMotion = root.classList.contains("motion-reduced");
+const isCompactMotion = root.classList.contains("motion-compact");
+const skipParallax = isCoarsePointer || isReducedMotion || isCompactMotion;
 const revealTargets = gsap.utils.toArray<HTMLElement>(
   "main section:not(#inicio) [data-reveal]:not(.product-card):not(.slot-card):not(.testimonial-card):not(.gallery-item)",
 );
@@ -42,8 +45,8 @@ const initIntro = () => {
     scrollTrigger: {
       trigger: document.body,
       start: "top top",
-      end: () => `+=${Math.min(Math.max(window.innerHeight * 0.36, 280), 380)}`,
-      scrub: 0.18,
+      end: () => `+=${Math.min(Math.max(window.innerHeight * (isReducedMotion ? 0.28 : 0.36), 240), 380)}`,
+      scrub: isReducedMotion ? 0.08 : 0.18,
       invalidateOnRefresh: true,
     },
   });
@@ -69,7 +72,7 @@ const initScrollMotion = () => {
       autoAlpha: 1,
       y: 0,
       scale: 1,
-      duration: 0.68,
+      duration: isReducedMotion ? 0.38 : 0.68,
       ease: "power3.out",
       clearProps: "opacity,visibility,transform",
       scrollTrigger: { trigger: target, start: "top 90%", once: true },
@@ -84,8 +87,8 @@ const initScrollMotion = () => {
         autoAlpha: 1,
         y: 0,
         scale: 1,
-        duration: 0.62,
-        stagger: 0.1,
+        duration: isReducedMotion ? 0.36 : 0.62,
+        stagger: isReducedMotion ? 0.04 : 0.1,
         ease: "power3.out",
         clearProps: "opacity,visibility,transform",
       }),
@@ -99,8 +102,8 @@ const initScrollMotion = () => {
         autoAlpha: 1,
         y: 0,
         scale: 1,
-        duration: 0.78,
-        stagger: 0.12,
+        duration: isReducedMotion ? 0.4 : 0.78,
+        stagger: isReducedMotion ? 0.04 : 0.12,
         ease: "power3.out",
         clearProps: "opacity,visibility,transform",
       }),
@@ -113,14 +116,14 @@ const initScrollMotion = () => {
       gsap.to(items, {
         autoAlpha: 1,
         x: 0,
-        duration: 0.7,
-        stagger: 0.08,
+        duration: isReducedMotion ? 0.36 : 0.7,
+        stagger: isReducedMotion ? 0.04 : 0.08,
         ease: "power2.out",
         clearProps: "opacity,visibility,transform",
       }),
   });
 
-  if (isCoarsePointer) return;
+  if (skipParallax) return;
 
   gsap.to(".narrative-photo img", {
     yPercent: 8,

@@ -2329,21 +2329,28 @@
       scroll-behavior: auto;
     }
 
-    *,
-    *::before,
-    *::after {
-      animation-duration: 1ms !important;
-      animation-iteration-count: 1 !important;
-      scroll-behavior: auto !important;
-      transition-duration: 1ms !important;
-    }
-
-    .brand-intro {
-      display: none !important;
-    }
-
     .progress-bar span {
       transition: none;
       will-change: auto;
+    }
+
+    .intro-scroll i {
+      animation-duration: 2.4s;
+    }
+
+    .motion-reduced .intro-logo-wrap,
+    .motion-reduced .intro-name,
+    .motion-reduced .intro-tagline,
+    .motion-reduced .intro-scroll {
+      animation-duration: 280ms;
+      animation-delay: 0ms;
+    }
+
+    .motion-reduced .product-card,
+    .motion-reduced .product-image img,
+    .motion-reduced .product-choice,
+    .motion-reduced .gallery-item img,
+    .motion-reduced .slot-card {
+      transition-duration: 120ms;
     }
   }
