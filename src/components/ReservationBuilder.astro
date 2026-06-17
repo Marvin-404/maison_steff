@@ -192,17 +192,36 @@ const fillingOptions = [
     </form>
   </div>
 
-  <dialog class="paste-guide" id="paste-guide" aria-labelledby="paste-guide-title">
+  <dialog class="paste-guide" id="paste-guide" aria-labelledby="paste-guide-title" aria-describedby="paste-guide-instruction paste-guide-helper">
     <div class="paste-guide-card">
       <button class="paste-guide-close" type="button" aria-label="Cerrar indicación" data-close-paste-guide>×</button>
+      <div class="paste-guide-priority" role="status">
+        <span>Antes de abrir Instagram</span>
+        <strong id="paste-guide-instruction">Tu mensaje de reserva ya fue copiado.</strong>
+      </div>
       <span class="paste-guide-icon" aria-hidden="true">✓</span>
       <p class="paste-guide-kicker">Mensaje copiado</p>
-      <h2 id="paste-guide-title">Tu solicitud está lista.</h2>
-      <p id="paste-guide-instruction">En Instagram, pega el mensaje en el chat y presiona enviar.</p>
+      <h2 id="paste-guide-title">No se perdió tu reserva.</h2>
+      <p class="paste-guide-helper" id="paste-guide-helper">
+        Cuando se abra Instagram, entra al chat de Maison Steff, pega el mensaje copiado y presiona enviar.
+      </p>
+      <div class="paste-guide-steps" aria-label="Cómo pegar el mensaje en Instagram">
+        <p>
+          <strong>En computadora:</strong> presiona Ctrl + V o haz clic derecho y elige “Pegar”.<br />
+          <strong>En celular:</strong> mantén presionado en el chat y toca “Pegar”.
+        </p>
+      </div>
+      <p class="paste-guide-reassurance">Tu información ya está lista para enviarse.</p>
+      <details class="message-preview">
+        <summary>Ver mensaje antes de abrir Instagram</summary>
+        <textarea id="copied-message-preview" readonly rows="8" aria-label="Mensaje de reserva copiado"></textarea>
+      </details>
+      <p class="copy-status paste-copy-status" id="paste-copy-status" role="status"></p>
       <div class="paste-guide-actions">
         <a class="button" href={site.instagramDmUrl} target="_blank" rel="noreferrer" id="open-instagram-after-copy">
-          Abrir Instagram <span aria-hidden="true">↗</span>
+          Entendido, abrir Instagram <span aria-hidden="true">↗</span>
         </a>
+        <button class="button button-secondary" type="button" id="copy-message-again">Copiar mensaje de nuevo</button>
         <button class="text-button" type="button" data-close-paste-guide>Volver al resumen</button>
       </div>
     </div>
@@ -218,6 +237,9 @@ const fillingOptions = [
   const status = document.querySelector<HTMLElement>("#copy-status");
   const pasteGuide = document.querySelector<HTMLDialogElement>("#paste-guide");
   const pasteInstruction = document.querySelector<HTMLElement>("#paste-guide-instruction");
+  const copiedMessagePreview = document.querySelector<HTMLTextAreaElement>("#copied-message-preview");
+  const pasteCopyStatus = document.querySelector<HTMLElement>("#paste-copy-status");
+  const copyMessageAgain = document.querySelector<HTMLButtonElement>("#copy-message-again");
   const quantity = document.querySelector<HTMLInputElement>("#quantity");
   const dateField = document.querySelector<HTMLInputElement>("#date");
   const productInputs = form ? [...form.querySelectorAll<HTMLInputElement>('input[name="product"]')] : [];
@@ -236,6 +258,7 @@ const fillingOptions = [
   };
   const stepTitles = ["Elige tu favorito", "Personaliza tu detalle", "Revisa tu solicitud"];
   let activeStep = 1;
+  let lastReservationMessage = "";
 
   if (dateField) {
     const today = new Date();
@@ -346,39 +369,88 @@ const fillingOptions = [
     syncProductChoices();
   };
 
-  const buildMessage = () => {
+  interface ReservationMessageData {
+    product: ReturnType<typeof selectedProduct>;
+    filling: ReturnType<typeof selectedFilling>;
+    quantity: number;
+    date: string;
+    occasion: string;
+    dedication: string;
+    delivery: string;
+    customerName: string;
+    estimatedTotal: number;
+  }
+
+  const cleanText = (value: FormDataEntryValue | null) => {
+    return value ? value.toString().trim() : "";
+  };
+
+  const normalizeOccasion = (value: string) => {
+    const occasions: Record<string, string> = {
+      "Cumpleaños": "un cumpleaños",
+      "Aniversario": "un aniversario",
+      "Detalle especial": "un detalle especial",
+      "Reunión": "una reunión",
+      "Solo porque sí": "un detalle solo porque sí",
+    };
+    return value ? occasions[value] || value.toLowerCase() : "una ocasión especial";
+  };
+
+  const getReservationData = (): ReservationMessageData => {
     const data = formData();
     const product = selectedProduct();
     const quantityValue = Math.max(1, Number(data.get("quantity") || 1));
-    const occasion = (data.get("occasion") || "una ocasión especial").toString().toLowerCase();
     const filling = selectedFilling();
     const estimatedTotal = product.basePrice > 0 ? (product.basePrice + filling.surcharge) * quantityValue : 0;
-    const dedicationValue = data.get("dedication");
-    const dedication = dedicationValue ? dedicationValue.toString().trim() : "";
-    const delivery = data.get("delivery") === "Recoger"
+    return {
+      product,
+      filling,
+      quantity: quantityValue,
+      date: formatDate(data.get("date")),
+      occasion: normalizeOccasion(cleanText(data.get("occasion"))),
+      dedication: cleanText(data.get("dedication")),
+      delivery: cleanText(data.get("delivery")),
+      customerName: cleanText(data.get("customerName")),
+      estimatedTotal,
+    };
+  };
+
+  const buildReservationMessage = (data: ReservationMessageData) => {
+    const priceLabel = data.product.priceLabel.replace(/^Desde/, "desde");
+    const fillingLabel = data.filling.label.replace(/:\s*/g, " de ").toLowerCase();
+    const productLine = `Me gustaría pedir ${data.product.name}.`;
+    const quantityLine = data.quantity === 1
+      ? `Sería 1 unidad y me aparece con precio base ${priceLabel}.`
+      : `Serían ${data.quantity} unidades y me aparece con precio base ${priceLabel} cada una.`;
+    const fillingLine = data.filling.surcharge > 0
+      ? `Me gustaría agregarle relleno de ${fillingLabel}, que suma L ${data.filling.surcharge} por unidad.`
+      : `Me gustaría que llevara relleno de ${fillingLabel}, sin recargo adicional.`;
+    const totalLine = data.estimatedTotal > 0
+      ? `Según las opciones que seleccioné, el total estimado antes de entrega sería de L ${data.estimatedTotal}.`
+      : "El total estimado lo podemos confirmar por Instagram.";
+    const dateLine = data.date !== "Por definir"
+      ? `Lo necesitaría para el ${data.date}, ya que es para ${data.occasion}.`
+      : `Todavía puedo confirmar la fecha por Instagram, pero sería para ${data.occasion}.`;
+    const dedicationLine = data.dedication
+      ? `Me gustaría que llevara el mensaje o diseño “${data.dedication}”.`
+      : "";
+    const deliveryLine = data.delivery === "Recoger"
       ? "Prefiero recogerlo."
-      : "Me gustaría consultar la entrega.";
-    const message = [
-      "Hola Maison Steff, me gustaría reservar un detalle.",
-      "",
-      `Quiero ${product.name}.`,
-      `Precio base seleccionado: ${product.priceLabel}.`,
-      quantityValue === 1 ? "Sería una unidad." : `Serían ${quantityValue} unidades.`,
-      filling.surcharge > 0
-        ? `Relleno: ${filling.label} (+L ${filling.surcharge} por unidad).`
-        : `Relleno: ${filling.label} sin recargo.`,
-      estimatedTotal > 0 ? `Total estimado antes de entrega: L ${estimatedTotal}.` : "Total estimado: por confirmar.",
-      `Lo necesito para el ${formatDate(data.get("date"))}.`,
-      `La ocasión es un ${occasion}.`,
-      ...(dedication ? [`Diseño o mensaje: ${dedication}.`] : ["Diseño o mensaje: lo podemos definir por Instagram."]),
-      "Si tengo una imagen de referencia, la enviaré por Instagram para confirmar si se puede realizar.",
-      "Entiendo que por ahora trabajan principalmente con chantilly y que las opciones con fondant o colores más vivos se consultarán más adelante.",
-      delivery,
-      `Mi nombre es ${data.get("customerName") || "Por definir"}.`,
-      "",
-      "¿Me confirman disponibilidad y precio final? Gracias.",
-    ];
-    return message.join("\n");
+      : "Me gustaría consultar si tienen entrega disponible por Instagram.";
+    const nameLine = data.customerName ? `Mi nombre es ${data.customerName}.` : "";
+
+    const personalDetails = [dateLine, dedicationLine].filter(Boolean).join(" ");
+    const deliveryDetails = [deliveryLine, nameLine].filter(Boolean).join(" ");
+
+    return [
+      "Hola Maison Steff, me gustaría reservar un detalle para una ocasión especial.",
+      `${productLine} ${quantityLine}`,
+      `${fillingLine} ${totalLine}`,
+      personalDetails,
+      "También puedo enviarles una imagen de referencia por Instagram para que me confirmen si se puede realizar. Entiendo que por ahora trabajan principalmente con chantilly y que las opciones con fondant o colores más vivos se pueden consultar.",
+      deliveryDetails,
+      "¿Me podrían confirmar disponibilidad y precio final, por favor?",
+    ].filter(Boolean).join("\n\n");
   };
 
   const copyMessage = async (message: string) => {
@@ -400,14 +472,7 @@ const fillingOptions = [
   };
 
   const pasteHelp = () => {
-    const touchDevice = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
-    if (touchDevice) {
-      return "En Instagram, mantén presionado el campo del mensaje, toca “Pegar” y después presiona enviar.";
-    }
-    if (/Macintosh|Mac OS X/.test(navigator.userAgent)) {
-      return "En el chat de Instagram, presiona ⌘ + V o haz clic derecho y selecciona “Pegar”. Después presiona enviar.";
-    }
-    return "En el chat de Instagram, presiona Ctrl + V o haz clic derecho y selecciona “Pegar”. Después presiona enviar.";
+    return "Tu mensaje de reserva ya fue copiado. Ahora solo falta pegarlo en Instagram y enviarlo.";
   };
 
   const showPasteGuide = () => {
@@ -439,7 +504,20 @@ const fillingOptions = [
   const openInstagramAfterCopy = document.querySelector("#open-instagram-after-copy");
   if (openInstagramAfterCopy) openInstagramAfterCopy.addEventListener("click", () => {
     closePasteGuide();
-    if (status) status.textContent = "Instagram abierto. Pega el mensaje copiado y presiona enviar.";
+    if (status) status.textContent = "Instagram abierto. Pega el mensaje copiado en el chat y presiona enviar.";
+  });
+
+  if (copyMessageAgain) copyMessageAgain.addEventListener("click", () => {
+    if (!lastReservationMessage) return;
+    copyMessage(lastReservationMessage).then(
+      () => {
+        if (pasteCopyStatus) pasteCopyStatus.textContent = "Mensaje copiado correctamente.";
+        if (status) status.textContent = "Mensaje copiado correctamente.";
+      },
+      () => {
+        if (pasteCopyStatus) pasteCopyStatus.textContent = "No pudimos copiar de nuevo. Puedes seleccionar el mensaje y copiarlo manualmente.";
+      },
+    );
   });
 
   document.querySelectorAll<HTMLButtonElement>(".next-step").forEach((button) => {
@@ -489,10 +567,13 @@ const fillingOptions = [
       if (customerName) customerName.reportValidity();
       return;
     }
-    copyMessage(buildMessage()).then(
+    lastReservationMessage = buildReservationMessage(getReservationData());
+    copyMessage(lastReservationMessage).then(
       () => {
         if (pasteInstruction) pasteInstruction.textContent = pasteHelp();
-        if (status) status.textContent = "Mensaje copiado. Revisa la indicación para abrir Instagram.";
+        if (copiedMessagePreview) copiedMessagePreview.value = lastReservationMessage;
+        if (pasteCopyStatus) pasteCopyStatus.textContent = "Mensaje copiado correctamente.";
+        if (status) status.textContent = "Mensaje copiado correctamente. Lee la indicación antes de abrir Instagram.";
         showPasteGuide();
       },
       () => {
