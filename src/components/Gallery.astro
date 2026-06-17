@@ -1,11 +1,17 @@
 ---
-import { withBase } from "../utils/asset";
+import OptimizedPicture from "./OptimizedPicture.astro";
 import { galleryItems } from "../data/gallery";
 
 const layoutClass = {
   standard: "",
   tall: "gallery-tall",
   wide: "gallery-wide",
+};
+
+const imageSizes = {
+  standard: "(min-width: 64rem) 27rem, (min-width: 42rem) 50vw, 100vw",
+  tall: "(min-width: 64rem) 27rem, (min-width: 42rem) 50vw, 100vw",
+  wide: "(min-width: 64rem) 54rem, (min-width: 42rem) 100vw, 100vw",
 };
 ---
 
@@ -21,7 +27,14 @@ const layoutClass = {
     <div class="gallery-grid">
       {galleryItems.map((item) => (
         <figure class:list={["gallery-item", layoutClass[item.layout ?? "standard"]]} data-gallery-id={item.id} data-reveal>
-          <img src={withBase(item.image)} alt={item.alt} width="720" height="760" loading="lazy" />
+          <OptimizedPicture
+            src={item.image}
+            alt={item.alt}
+            width="720"
+            height="760"
+            loading="lazy"
+            sizes={imageSizes[item.layout ?? "standard"]}
+          />
           <figcaption>{item.text}</figcaption>
         </figure>
       ))}

@@ -1,0 +1,53 @@
+---
+import { withBase } from "../utils/asset";
+import { getOptimizedImage, toSrcSet } from "../utils/optimizedImages";
+
+interface Props {
+  src: string;
+  alt: string;
+  width: string | number;
+  height: string | number;
+  sizes?: string;
+  loading?: "eager" | "lazy";
+  decoding?: "async" | "sync" | "auto";
+  fetchpriority?: "high" | "low" | "auto";
+  class?: string;
+  pictureClass?: string;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  sizes = "100vw",
+  loading,
+  decoding = "async",
+  fetchpriority,
+  class: className,
+  pictureClass,
+} = Astro.props;
+
+const optimized = getOptimizedImage(src);
+const imageAttrs = {
+  src: withBase(src),
+  alt,
+  width,
+  height,
+  loading,
+  decoding,
+  fetchpriority,
+  class: className,
+};
+---
+
+{
+  optimized ? (
+    <picture class={pictureClass}>
+      <source type="image/webp" srcset={toSrcSet(optimized.webp)} sizes={sizes} />
+      <img {...imageAttrs} />
+    </picture>
+  ) : (
+    <img {...imageAttrs} />
+  )
+}

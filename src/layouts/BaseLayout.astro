@@ -10,22 +10,52 @@ interface Props {
 
 const { title = site.title, description = site.description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL(withBase("images/real/pastel-mixto.jpg"), Astro.site);
+const ogImage = new URL(withBase("images/real/fresa-clasica-fruta.jpg"), Astro.site);
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
     <script is:inline>
-      document.documentElement.classList.add("motion-intro", "motion-preload");
-      history.scrollRestoration = "manual";
+      (function () {
+        var root = document.documentElement;
+        var nav = window.navigator || {};
+        var connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        var reduceMotion = false;
+
+        if (window.matchMedia) {
+          reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        }
+
+        var constrainedDevice =
+          reduceMotion ||
+          !!(connection && connection.saveData) ||
+          (!!nav.deviceMemory && nav.deviceMemory <= 2) ||
+          (!!nav.hardwareConcurrency && nav.hardwareConcurrency <= 2);
+
+        if (constrainedDevice) {
+          root.className += " motion-lite";
+          return;
+        }
+
+        root.className += " motion-full motion-intro motion-preload";
+        if (window.history && "scrollRestoration" in window.history) {
+          history.scrollRestoration = "manual";
+        }
+      })();
     </script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#fff8f2" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    <link rel="preload" as="image" href={withBase("images/real/maison-steff-logo.png")} fetchpriority="high" />
+    <link
+      rel="preload"
+      as="image"
+      href={withBase("images/optimized/maison-steff-logo-520.webp")}
+      type="image/webp"
+      fetchpriority="high"
+    />
     <link rel="icon" type="image/png" href={withBase("images/real/maison-steff-logo.png")} />
     <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
@@ -43,20 +73,37 @@ const ogImage = new URL(withBase("images/real/pastel-mixto.jpg"), Astro.site);
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
     <slot />
     <script is:inline>
-      const progress = document.querySelector("#page-progress");
-      let progressFrame = 0;
-      const updateProgress = () => {
-        if (progressFrame) return;
-        progressFrame = requestAnimationFrame(() => {
-          const total = document.documentElement.scrollHeight - window.innerHeight;
-          const value = total > 0 ? (window.scrollY / total) * 100 : 0;
-          if (progress) progress.style.width = `${Math.min(100, value)}%`;
-          progressFrame = 0;
-        });
-      };
-      window.addEventListener("scroll", updateProgress, { passive: true });
-      updateProgress();
+      (function () {
+        var progress = document.querySelector("#page-progress");
+        var progressFrame = 0;
+        var raf = window.requestAnimationFrame || function (callback) { return window.setTimeout(callback, 16); };
+
+        if (!progress) return;
+
+        var updateProgress = function () {
+          if (progressFrame) return;
+          progressFrame = raf(function () {
+            var total = document.documentElement.scrollHeight - window.innerHeight;
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+            var value = total > 0 ? Math.min(1, scrollTop / total) : 0;
+            progress.style.transform = "scaleX(" + value + ")";
+            progressFrame = 0;
+          });
+        };
+
+        window.addEventListener("scroll", updateProgress, { passive: true });
+        updateProgress();
+      })();
     </script>
-    <script src="../scripts/motion.ts"></script>
+    <script>
+      const root = document.documentElement;
+
+      if (root.classList.contains("motion-full")) {
+        import("../scripts/motion.ts").catch(() => {
+          root.classList.remove("motion-full", "motion-intro", "motion-preload");
+          root.classList.add("motion-lite");
+        });
+      }
+    </script>
   </body>
 </html>

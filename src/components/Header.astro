@@ -1,13 +1,20 @@
 ---
 import { site } from "../data/site";
-import { withBase } from "../utils/asset";
+import OptimizedPicture from "./OptimizedPicture.astro";
 ---
 
 <div class="progress-bar" aria-hidden="true"><span id="page-progress"></span></div>
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="#inicio" aria-label="Maison Steff, ir al inicio">
-      <img src={withBase("images/real/maison-steff-logo.png")} alt="" width="520" height="520" />
+      <OptimizedPicture
+        src="images/real/maison-steff-logo.png"
+        alt=""
+        width="520"
+        height="520"
+        sizes="3rem"
+        fetchpriority="high"
+      />
       <span>
         <strong>Maison</strong>
         <em>Steff</em>
@@ -35,18 +42,20 @@ import { withBase } from "../utils/asset";
   const menuToggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
 
   const closeMenu = () => {
-    menu?.classList.remove("open");
-    menuToggle?.setAttribute("aria-expanded", "false");
-    menuToggle?.setAttribute("aria-label", "Abrir menú");
+    if (menu) menu.classList.remove("open");
+    if (menuToggle) {
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Abrir menú");
+    }
   };
 
-  menuToggle?.addEventListener("click", () => {
-    const open = !menu?.classList.contains("open");
-    menu?.classList.toggle("open", open);
+  if (menuToggle) menuToggle.addEventListener("click", () => {
+    const open = !(menu && menu.classList.contains("open"));
+    if (menu) menu.classList.toggle("open", open);
     menuToggle.setAttribute("aria-expanded", String(open));
     menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
   });
 
-  menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+  if (menu) menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
   document.addEventListener("keydown", (event) => event.key === "Escape" && closeMenu());
 </script>

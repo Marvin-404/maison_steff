@@ -55,7 +55,12 @@ export const faqs = [
   {
     question: "¿Puedo personalizar la dedicatoria?",
     answer:
-      "Sí. Puedes incluir una dedicatoria breve y consultar otros detalles personalizados al reservar.",
+      "Sí. Puedes incluir una dedicatoria breve, contar tu idea de diseño o enviar una imagen de referencia por Instagram para confirmar si se puede realizar.",
+  },
+  {
+    question: "¿Qué rellenos puedo elegir?",
+    answer:
+      "Por ahora puedes elegir chantilly sin recargo, chocolate +L 15, jalea de fresa +L 10, galleta Oreo +L 15 o fruta de manzana/fresa +L 20 por unidad.",
   },
   {
     question: "¿Tienen entrega a domicilio?",

@@ -1,5 +1,5 @@
 ---
-import { withBase } from "../utils/asset";
+import OptimizedPicture from "./OptimizedPicture.astro";
 
 const ideas = [
   ["Sabor", "Preparado con ingredientes frescos y una receta cuidada."],
@@ -10,12 +10,13 @@ const ideas = [
 
 <section class="narrative" id="historia">
   <div class="narrative-photo" data-reveal>
-    <img
-      src={withBase("images/real/pastel-fresa.jpg")}
-      alt="Pastel individual de fresa Maison Steff mostrando su relleno"
-      width="1200"
-      height="1440"
+    <OptimizedPicture
+      src="images/real/fresa-chantilly-fruta.jpg"
+      alt="Pastel rosado Maison Steff con fresas naturales y chantilly"
+      width="736"
+      height="920"
       loading="lazy"
+      sizes="(min-width: 64rem) 52vw, 100vw"
     />
     <span class="photo-caption">Una pequeña obra de dulzura.</span>
   </div>

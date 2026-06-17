@@ -7,4 +7,13 @@ export default defineConfig({
   build: {
     inlineStylesheets: "auto",
   },
+  vite: {
+    esbuild: {
+      target: "es2018",
+    },
+    build: {
+      modulePreload: false,
+      target: "es2018",
+    },
+  },
 });

@@ -1,6 +1,7 @@
 ---
 import { site } from "../data/site";
 import { withBase } from "../utils/asset";
+import OptimizedPicture from "./OptimizedPicture.astro";
 const year = new Date().getFullYear();
 ---
 
@@ -8,7 +9,14 @@ const year = new Date().getFullYear();
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand" href="#inicio">
-        <img src={withBase("images/real/maison-steff-logo.png")} alt="" width="520" height="520" loading="lazy" />
+        <OptimizedPicture
+          src="images/real/maison-steff-logo.png"
+          alt=""
+          width="520"
+          height="520"
+          loading="lazy"
+          sizes="3rem"
+        />
         <span><strong>Maison</strong><em>Steff</em></span>
       </a>
       <p>Pasteles individuales por encargo, creados para regalar, celebrar y consentir.</p>

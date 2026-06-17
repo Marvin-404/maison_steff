@@ -1,7 +1,15 @@
 ---
 import { availableProducts } from "../data/products";
 import { site } from "../data/site";
-import { withBase } from "../utils/asset";
+import OptimizedPicture from "./OptimizedPicture.astro";
+
+const fillingOptions = [
+  { label: "Chantilly", surcharge: 0 },
+  { label: "Chocolate", surcharge: 15 },
+  { label: "Jalea de fresa", surcharge: 10 },
+  { label: "Galleta Oreo", surcharge: 15 },
+  { label: "Fruta: manzana o fresa", surcharge: 20 },
+];
 ---
 
 <section class="section reservation-section" id="reservar">
@@ -32,7 +40,14 @@ import { withBase } from "../utils/asset";
           {availableProducts.map((product) => (
             <label class="product-choice" data-product-id={product.id}>
               <input type="radio" name="product" value={product.name} required />
-              <img src={withBase(product.image)} alt={product.alt} width="680" height="760" loading="lazy" />
+              <OptimizedPicture
+                src={product.image}
+                alt={product.alt}
+                width="680"
+                height="760"
+                loading="lazy"
+                sizes="(min-width: 64rem) 16rem, (min-width: 42rem) 33vw, 50vw"
+              />
               <span>
                 <small>{product.badge}</small>
                 <strong>{product.name}</strong>
@@ -52,7 +67,7 @@ import { withBase } from "../utils/asset";
         <div class="step-copy">
           <span>Segundo paso</span>
           <h3 id="step-two-title" tabindex="-1">Cuéntanos un poco más.</h3>
-          <p>Solo necesitamos los detalles esenciales para revisar tu solicitud.</p>
+          <p>Elige relleno, fecha y los detalles del diseño para revisar tu solicitud.</p>
         </div>
         <div class="detail-fields">
           <div class="field quantity-field">
@@ -69,6 +84,24 @@ import { withBase } from "../utils/asset";
           </div>
         </div>
         <fieldset class="choice-field">
+          <legend>Elige el relleno</legend>
+          <div class="choice-chips">
+            {fillingOptions.map((option, index) => (
+              <label>
+                <input
+                  type="radio"
+                  name="filling"
+                  value={option.label}
+                  data-surcharge={option.surcharge}
+                  checked={index === 0}
+                />
+                <span>{option.surcharge > 0 ? `${option.label} +L ${option.surcharge}` : `${option.label} sin recargo`}</span>
+              </label>
+            ))}
+          </div>
+          <p class="field-note">El recargo del relleno se suma por unidad. El precio final se confirma por Instagram.</p>
+        </fieldset>
+        <fieldset class="choice-field">
           <legend>¿Para qué ocasión?</legend>
           <div class="choice-chips">
             {["Cumpleaños", "Aniversario", "Detalle especial", "Reunión", "Solo porque sí"].map((occasion, index) => (
@@ -80,8 +113,9 @@ import { withBase } from "../utils/asset";
           </div>
         </fieldset>
         <div class="field">
-          <label for="dedication">Mensaje o detalle especial <span>opcional</span></label>
-          <textarea id="dedication" name="dedication" rows="3" placeholder="Ejemplo: una dedicatoria breve, colores favoritos o idea especial"></textarea>
+          <label for="dedication">Mensaje, diseño o idea especial <span>opcional</span></label>
+          <textarea id="dedication" name="dedication" rows="3" placeholder="Ejemplo: Happy Birthday Ana, flores rosadas, corazones o una idea parecida a mi referencia"></textarea>
+          <p class="field-note">Por ahora trabajamos principalmente con chantilly. Si tienes una imagen de referencia, envíala por Instagram para confirmar si se puede realizar.</p>
         </div>
         <div class="step-footer">
           <button class="text-button previous-step" type="button" data-previous="1"><span>←</span> Volver</button>
@@ -120,14 +154,15 @@ import { withBase } from "../utils/asset";
           </div>
           <dl>
             <div><dt>Producto</dt><dd id="summary-product">Por elegir</dd></div>
+            <div><dt>Relleno</dt><dd id="summary-filling">Chantilly sin recargo</dd></div>
             <div><dt>Cantidad</dt><dd id="summary-quantity">1</dd></div>
             <div><dt>Fecha</dt><dd id="summary-date">Por definir</dd></div>
             <div><dt>Ocasión</dt><dd id="summary-occasion">Cumpleaños</dd></div>
-            <div><dt>Detalle</dt><dd id="summary-detail">Sin detalle especial</dd></div>
+            <div><dt>Diseño</dt><dd id="summary-detail">Sin detalle especial</dd></div>
           </dl>
         </div>
 
-        <p class="form-note">Copiaremos tu mensaje y te mostraremos cómo pegarlo antes de abrir Instagram. La reserva se confirma cuando Maison Steff responde.</p>
+        <p class="form-note">Copiaremos tu mensaje y te mostraremos cómo pegarlo antes de abrir Instagram. Si tienes una foto de referencia, puedes enviarla en ese chat para confirmar el diseño.</p>
         <div class="final-reservation-actions">
           <a
             class="button instagram-reservation-button"
@@ -176,6 +211,18 @@ import { withBase } from "../utils/asset";
   const pasteInstruction = document.querySelector<HTMLElement>("#paste-guide-instruction");
   const quantity = document.querySelector<HTMLInputElement>("#quantity");
   const dateField = document.querySelector<HTMLInputElement>("#date");
+  const productInputs = form ? [...form.querySelectorAll<HTMLInputElement>('input[name="product"]')] : [];
+  const fillingInputs = form ? [...form.querySelectorAll<HTMLInputElement>('input[name="filling"]')] : [];
+  const dateFormatter = new Intl.DateTimeFormat("es-HN", { dateStyle: "long", timeZone: "UTC" });
+  const motionSafe = !window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const summaryElements: Record<string, HTMLElement | null> = {
+    "summary-product": document.querySelector("#summary-product"),
+    "summary-filling": document.querySelector("#summary-filling"),
+    "summary-quantity": document.querySelector("#summary-quantity"),
+    "summary-date": document.querySelector("#summary-date"),
+    "summary-occasion": document.querySelector("#summary-occasion"),
+    "summary-detail": document.querySelector("#summary-detail"),
+  };
   const stepTitles = ["Elige tu favorito", "Personaliza tu detalle", "Revisa tu solicitud"];
   let activeStep = 1;
 
@@ -186,14 +233,15 @@ import { withBase } from "../utils/asset";
   }
 
   const fieldForStep = (step: number) => {
-    if (step === 1) return form?.querySelector<HTMLInputElement>('input[name="product"]:checked');
-    if (step === 2) return dateField?.value ? dateField : null;
-    return form?.querySelector<HTMLInputElement>("#customer-name");
+    if (step === 1) return form ? form.querySelector<HTMLInputElement>('input[name="product"]:checked') : null;
+    if (step === 2) return dateField && dateField.value ? dateField : null;
+    return form ? form.querySelector<HTMLInputElement>("#customer-name") : null;
   };
 
   const canContinue = (step: number) => {
     if (step === 1 && !fieldForStep(1)) {
-      form?.querySelector<HTMLElement>(".product-choice-grid")?.classList.add("needs-attention");
+      const choiceGrid = form ? form.querySelector<HTMLElement>(".product-choice-grid") : null;
+      if (choiceGrid) choiceGrid.classList.add("needs-attention");
       return false;
     }
     if (step === 2) {
@@ -216,14 +264,13 @@ import { withBase } from "../utils/asset";
     if (title) title.textContent = stepTitles[activeStep - 1];
     if (counter) counter.textContent = `0${activeStep}`;
     if (progress) progress.style.width = `${(activeStep / 3) * 100}%`;
-    form?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (form) form.scrollIntoView({ behavior: motionSafe ? "smooth" : "auto", block: "center" });
     updateSummary();
     if (focusHeading) {
       requestAnimationFrame(() => {
-        panels
-          .find((panel) => Number(panel.dataset.stepPanel) === activeStep)
-          ?.querySelector<HTMLElement>("h3")
-          ?.focus({ preventScroll: true });
+        const activePanel = panels.find((panel) => Number(panel.dataset.stepPanel) === activeStep);
+        const heading = activePanel ? activePanel.querySelector<HTMLElement>("h3") : null;
+        if (heading) heading.focus({ preventScroll: true });
       });
     }
   };
@@ -232,25 +279,45 @@ import { withBase } from "../utils/asset";
 
   const formatDate = (value: FormDataEntryValue | null) => {
     if (!value) return "Por definir";
-    return new Intl.DateTimeFormat("es-HN", { dateStyle: "long", timeZone: "UTC" }).format(
-      new Date(`${value.toString()}T00:00:00Z`),
-    );
+    return dateFormatter.format(new Date(`${value.toString()}T00:00:00Z`));
+  };
+
+  const textValue = (value: FormDataEntryValue | null, fallback: string) => {
+    return value ? value.toString() : fallback;
+  };
+
+  const selectedFilling = () => {
+    const input = fillingInputs.find((item) => item.checked);
+    const label = input ? input.value : "Chantilly";
+    const surcharge = input ? Number(input.dataset.surcharge || 0) : 0;
+    const summary = surcharge > 0 ? `${label} (+L ${surcharge} c/u)` : `${label} sin recargo`;
+    return { label, surcharge, summary };
+  };
+
+  const syncProductChoices = () => {
+    productInputs.forEach((input) => {
+      const choice = input.closest(".product-choice");
+      if (choice) choice.classList.toggle("is-selected", input.checked);
+    });
   };
 
   const updateSummary = () => {
     const data = formData();
+    const filling = selectedFilling();
     const values: Record<string, string> = {
-      "summary-product": data.get("product")?.toString() || "Por elegir",
-      "summary-quantity": data.get("quantity")?.toString() || "1",
+      "summary-product": textValue(data.get("product"), "Por elegir"),
+      "summary-filling": filling.summary,
+      "summary-quantity": textValue(data.get("quantity"), "1"),
       "summary-date": formatDate(data.get("date")),
-      "summary-occasion": data.get("occasion")?.toString() || "Por definir",
-      "summary-detail": data.get("dedication")?.toString() || "Sin detalle especial",
+      "summary-occasion": textValue(data.get("occasion"), "Por definir"),
+      "summary-detail": textValue(data.get("dedication"), "Sin detalle especial"),
     };
     Object.entries(values).forEach(([id, value]) => {
-      const element = document.querySelector<HTMLElement>(`#${id}`);
+      const element = summaryElements[id];
       if (element) element.textContent = value;
     });
     if (status) status.textContent = "";
+    syncProductChoices();
   };
 
   const buildMessage = () => {
@@ -258,7 +325,9 @@ import { withBase } from "../utils/asset";
     const product = data.get("product") || "un detalle";
     const quantityValue = Number(data.get("quantity") || 1);
     const occasion = (data.get("occasion") || "una ocasión especial").toString().toLowerCase();
-    const dedication = data.get("dedication")?.toString().trim();
+    const filling = selectedFilling();
+    const dedicationValue = data.get("dedication");
+    const dedication = dedicationValue ? dedicationValue.toString().trim() : "";
     const delivery = data.get("delivery") === "Recoger"
       ? "Prefiero recogerlo."
       : "Me gustaría consultar la entrega.";
@@ -267,9 +336,14 @@ import { withBase } from "../utils/asset";
       "",
       `Quiero ${product}.`,
       quantityValue === 1 ? "Sería una unidad." : `Serían ${quantityValue} unidades.`,
+      filling.surcharge > 0
+        ? `Relleno: ${filling.label} (+L ${filling.surcharge} por unidad).`
+        : `Relleno: ${filling.label} sin recargo.`,
       `Lo necesito para el ${formatDate(data.get("date"))}.`,
       `La ocasión es un ${occasion}.`,
-      ...(dedication ? [`Y como detalle especial, quiero ${dedication}.`] : []),
+      ...(dedication ? [`Diseño o mensaje: ${dedication}.`] : ["Diseño o mensaje: lo podemos definir por Instagram."]),
+      "Si tengo una imagen de referencia, la enviaré por Instagram para confirmar si se puede realizar.",
+      "Entiendo que por ahora trabajan principalmente con chantilly.",
       delivery,
       `Mi nombre es ${data.get("customerName") || "Por definir"}.`,
       "",
@@ -279,7 +353,7 @@ import { withBase } from "../utils/asset";
   };
 
   const copyMessage = async (message: string) => {
-    if (navigator.clipboard?.writeText) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
       await navigator.clipboard.writeText(message);
       return;
     }
@@ -289,7 +363,7 @@ import { withBase } from "../utils/asset";
     textarea.setAttribute("readonly", "");
     textarea.style.position = "fixed";
     textarea.style.opacity = "0";
-    document.body.append(textarea);
+    document.body.appendChild(textarea);
     textarea.select();
     const copied = document.execCommand("copy");
     textarea.remove();
@@ -307,17 +381,34 @@ import { withBase } from "../utils/asset";
     return "En el chat de Instagram, presiona Ctrl + V o haz clic derecho y selecciona “Pegar”. Después presiona enviar.";
   };
 
-  const closePasteGuide = () => pasteGuide?.close();
+  const showPasteGuide = () => {
+    if (!pasteGuide) return;
+    if (typeof pasteGuide.showModal === "function") {
+      pasteGuide.showModal();
+      return;
+    }
+    pasteGuide.setAttribute("open", "");
+  };
+
+  const closePasteGuide = () => {
+    if (!pasteGuide) return;
+    if (typeof pasteGuide.close === "function") {
+      pasteGuide.close();
+      return;
+    }
+    pasteGuide.removeAttribute("open");
+  };
 
   document.querySelectorAll<HTMLButtonElement>("[data-close-paste-guide]").forEach((button) => {
     button.addEventListener("click", closePasteGuide);
   });
 
-  pasteGuide?.addEventListener("click", (event) => {
+  if (pasteGuide) pasteGuide.addEventListener("click", (event) => {
     if (event.target === pasteGuide) closePasteGuide();
   });
 
-  document.querySelector("#open-instagram-after-copy")?.addEventListener("click", () => {
+  const openInstagramAfterCopy = document.querySelector("#open-instagram-after-copy");
+  if (openInstagramAfterCopy) openInstagramAfterCopy.addEventListener("click", () => {
     closePasteGuide();
     if (status) status.textContent = "Instagram abierto. Pega el mensaje copiado y presiona enviar.";
   });
@@ -340,37 +431,40 @@ import { withBase } from "../utils/asset";
     });
   });
 
-  form?.addEventListener("input", (event) => {
+  if (form) form.addEventListener("input", (event) => {
     if ((event.target as HTMLInputElement).name === "product") {
-      form.querySelector(".product-choice-grid")?.classList.remove("needs-attention");
+      const choiceGrid = form.querySelector(".product-choice-grid");
+      if (choiceGrid) choiceGrid.classList.remove("needs-attention");
     }
     updateSummary();
   });
 
-  form?.addEventListener("reset", () => {
+  if (form) form.addEventListener("reset", () => {
     setTimeout(() => setStep(1, false));
   });
 
   window.addEventListener("select-product", ((event: CustomEvent<string>) => {
-    const product = form?.querySelector<HTMLInputElement>(`input[name="product"][value="${CSS.escape(event.detail)}"]`);
+    const product = productInputs.find((input) => input.value === event.detail);
     if (product) {
       product.checked = true;
+      syncProductChoices();
       setStep(2);
     }
   }) as EventListener);
 
-  document.querySelector<HTMLAnchorElement>("#copy-open-instagram")?.addEventListener("click", (event) => {
+  const copyOpenInstagram = document.querySelector<HTMLAnchorElement>("#copy-open-instagram");
+  if (copyOpenInstagram) copyOpenInstagram.addEventListener("click", (event) => {
     event.preventDefault();
-    const customerName = form?.querySelector<HTMLInputElement>("#customer-name");
-    if (!customerName?.value.trim()) {
-      customerName?.reportValidity();
+    const customerName = form ? form.querySelector<HTMLInputElement>("#customer-name") : null;
+    if (!customerName || !customerName.value.trim()) {
+      if (customerName) customerName.reportValidity();
       return;
     }
     copyMessage(buildMessage()).then(
       () => {
         if (pasteInstruction) pasteInstruction.textContent = pasteHelp();
         if (status) status.textContent = "Mensaje copiado. Revisa la indicación para abrir Instagram.";
-        pasteGuide?.showModal();
+        showPasteGuide();
       },
       () => {
         if (status) status.textContent = "No pudimos copiar automáticamente. Revisa los datos e inténtalo nuevamente.";

@@ -1,5 +1,5 @@
 ---
-import { withBase } from "../utils/asset";
+import OptimizedPicture from "./OptimizedPicture.astro";
 
 const details = [
   ["Empaque cuidado", "Una presentación delicada desde el primer vistazo."],
@@ -11,12 +11,13 @@ const details = [
 <section class="experience-section" id="experiencia">
   <div class="container experience-grid">
     <div class="experience-visual" data-reveal>
-      <img
-        src={withBase("images/real/empaque-pasteles.jpg")}
+      <OptimizedPicture
+        src="images/real/empaque-pasteles.jpg"
         alt="Pasteles individuales Maison Steff listos en su empaque"
         width="1050"
         height="1200"
         loading="lazy"
+        sizes="(min-width: 64rem) 38rem, calc(100vw - 2rem)"
       />
       <div class="image-caption">Preparado con intención.<br />Entregado con encanto.</div>
     </div>

@@ -1,6 +1,6 @@
 ---
 import type { Product } from "../data/products";
-import { withBase } from "../utils/asset";
+import OptimizedPicture from "./OptimizedPicture.astro";
 
 interface Props {
   product: Product;
@@ -11,7 +11,14 @@ const { product } = Astro.props;
 
 <article class="product-card" data-product-id={product.id} data-filters={product.filters.join(" ")} data-reveal>
   <div class="product-image">
-    <img src={withBase(product.image)} alt={product.alt} width="680" height="760" loading="lazy" />
+    <OptimizedPicture
+      src={product.image}
+      alt={product.alt}
+      width="680"
+      height="760"
+      loading="lazy"
+      sizes="(min-width: 64rem) 27rem, (min-width: 42rem) 50vw, 100vw"
+    />
     <span class="product-badge">{product.badge}</span>
   </div>
   <div class="product-content">

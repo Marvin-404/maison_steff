@@ -1,5 +1,5 @@
 ---
-import { withBase } from "../utils/asset";
+import OptimizedPicture from "./OptimizedPicture.astro";
 ---
 
 <div class="brand-intro" id="brand-intro" aria-hidden="true">
@@ -10,12 +10,14 @@ import { withBase } from "../utils/asset";
     <div class="intro-logo-wrap">
       <span class="intro-ring intro-ring-one"></span>
       <span class="intro-ring intro-ring-two"></span>
-      <img
-        src={withBase("images/real/maison-steff-logo.png")}
+      <OptimizedPicture
+        src="images/real/maison-steff-logo.png"
         alt=""
         class="intro-logo"
+        pictureClass="intro-logo-picture"
         width="520"
         height="520"
+        sizes="(min-width: 64rem) 34rem, 48vw"
         fetchpriority="high"
       />
     </div>

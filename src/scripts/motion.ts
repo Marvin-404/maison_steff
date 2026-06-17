@@ -4,7 +4,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true, limitCallbacks: true });
 
+const root = document.documentElement;
 const intro = document.querySelector<HTMLElement>("#brand-intro");
+const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
 const revealTargets = gsap.utils.toArray<HTMLElement>(
   "main section:not(#inicio) [data-reveal]:not(.product-card):not(.slot-card):not(.testimonial-card):not(.gallery-item)",
 );
@@ -118,6 +120,8 @@ const initScrollMotion = () => {
       }),
   });
 
+  if (isCoarsePointer) return;
+
   gsap.to(".narrative-photo img", {
     yPercent: 8,
     scale: 1.06,
@@ -150,4 +154,4 @@ window.addEventListener("pageshow", (event) => event.persisted && resetToIntro()
 prepareMotionStates();
 initIntro();
 initScrollMotion();
-document.documentElement.classList.remove("motion-preload");
+root.classList.remove("motion-preload");

@@ -33,6 +33,10 @@ import { availableProducts, catalogFilters } from "../data/products";
 <script>
   const filterButtons = document.querySelectorAll<HTMLButtonElement>(".filter-button");
   const productCards = document.querySelectorAll<HTMLElement>(".product-card");
+  const motionSafe = !window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const productFilters = new Map(
+    [...productCards].map((card) => [card, new Set(card.dataset.filters ? card.dataset.filters.split(" ") : [])]),
+  );
 
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -43,7 +47,8 @@ import { availableProducts, catalogFilters } from "../data/products";
         item.setAttribute("aria-pressed", String(active));
       });
       productCards.forEach((card) => {
-        const visible = filter === "all" || card.dataset.filters?.split(" ").includes(filter ?? "");
+        const filters = productFilters.get(card);
+        const visible = filter === "all" || Boolean(filters && filters.has(filter || ""));
         card.hidden = !visible;
       });
     });
@@ -52,7 +57,8 @@ import { availableProducts, catalogFilters } from "../data/products";
   document.querySelectorAll<HTMLButtonElement>(".reserve-product").forEach((button) => {
     button.addEventListener("click", () => {
       window.dispatchEvent(new CustomEvent("select-product", { detail: button.dataset.product }));
-      document.querySelector("#reservar")?.scrollIntoView({ behavior: "smooth" });
+      const reservation = document.querySelector("#reservar");
+      if (reservation) reservation.scrollIntoView({ behavior: motionSafe ? "smooth" : "auto" });
     });
   });
 </script>
