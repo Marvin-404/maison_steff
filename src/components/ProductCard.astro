@@ -9,7 +9,13 @@ interface Props {
 const { product } = Astro.props;
 ---
 
-<article class="product-card" data-product-id={product.id} data-filters={product.filters.join(" ")} data-reveal>
+<article
+  class="product-card"
+  data-product-id={product.id}
+  data-product-price={product.basePrice}
+  data-filters={product.filters.join(" ")}
+  data-reveal
+>
   <div class="product-image">
     <OptimizedPicture
       src={product.image}
@@ -17,7 +23,7 @@ const { product } = Astro.props;
       width="680"
       height="760"
       loading="lazy"
-      sizes="(min-width: 64rem) 27rem, (min-width: 42rem) 50vw, 100vw"
+      sizes="(min-width: 64rem) 24rem, (min-width: 42rem) 45vw, 82vw"
     />
     <span class="product-badge">{product.badge}</span>
   </div>
@@ -27,7 +33,12 @@ const { product } = Astro.props;
     <p>{product.description}</p>
     <div class="product-footer">
       <strong>{product.price}</strong>
-      <button class="text-button reserve-product" type="button" data-product={product.name}>
+      <button
+        class="text-button reserve-product"
+        type="button"
+        data-product={product.name}
+        data-product-price={product.basePrice}
+      >
         Reservar este <span aria-hidden="true">↗</span>
       </button>
     </div>

@@ -27,18 +27,20 @@ const ogImage = new URL(withBase("images/real/fresa-clasica-fruta.jpg"), Astro.s
           reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         }
 
-        var constrainedDevice =
-          reduceMotion ||
-          !!(connection && connection.saveData) ||
-          (!!nav.deviceMemory && nav.deviceMemory <= 2) ||
-          (!!nav.hardwareConcurrency && nav.hardwareConcurrency <= 2);
-
-        if (constrainedDevice) {
+        if (reduceMotion) {
           root.className += " motion-lite";
           return;
         }
 
+        var compactMotion =
+          !!(connection && connection.saveData) ||
+          (!!nav.deviceMemory && nav.deviceMemory <= 2) ||
+          (!!nav.hardwareConcurrency && nav.hardwareConcurrency <= 2);
+
         root.className += " motion-full motion-intro motion-preload";
+        if (compactMotion) {
+          root.className += " motion-compact";
+        }
         if (window.history && "scrollRestoration" in window.history) {
           history.scrollRestoration = "manual";
         }

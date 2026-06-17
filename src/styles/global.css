@@ -966,14 +966,28 @@
 
   .product-grid {
     display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(16.5rem, 82vw);
+    grid-template-rows: 1fr;
+    overflow-x: auto;
     gap: 1rem;
+    margin-inline: -1rem;
+    padding: 0.35rem 1rem 1.25rem;
+    scroll-padding-inline: 1rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
   }
 
   .product-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.88);
     border: 1px solid rgba(106, 74, 61, 0.11);
     border-radius: 1.5rem;
+    scroll-snap-align: start;
     transition: transform 280ms ease, box-shadow 280ms ease;
   }
 
@@ -1028,6 +1042,9 @@
   }
 
   .product-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     padding: 1.35rem;
   }
 
@@ -1051,7 +1068,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    margin-top: 1.2rem;
+    margin-top: auto;
     padding-top: 1rem;
     border-top: 1px solid var(--line);
   }
@@ -1060,102 +1077,6 @@
     font-family: var(--serif);
     font-size: 0.98rem;
     font-weight: 400;
-  }
-
-  .proposal-panel {
-    margin-top: 2.2rem;
-    margin-top: clamp(2.2rem, 5vw, 4rem);
-  }
-
-  .proposal-heading {
-    display: grid;
-    align-items: end;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .proposal-heading h3 {
-    margin-top: 0.25rem;
-    font-size: 1.75rem;
-    font-size: clamp(1.75rem, 4vw, 3.2rem);
-  }
-
-  .proposal-heading > p {
-    max-width: 32rem;
-    color: var(--muted);
-    font-size: var(--text-body-small);
-  }
-
-  .proposal-rail,
-  .inspiration-rail {
-    display: flex;
-    overflow-x: auto;
-    gap: 0.85rem;
-    margin-inline: -1rem;
-    padding: 0.2rem 1rem 1rem;
-    scroll-padding-inline: 1rem;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .proposal-card,
-  .inspiration-choice {
-    position: relative;
-    flex: 0 0 min(72vw, 16rem);
-    overflow: hidden;
-    min-width: 0;
-    text-align: left;
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(106, 74, 61, 0.11);
-    border-radius: 1rem;
-    cursor: pointer;
-    scroll-snap-align: start;
-    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-  }
-
-  .proposal-card:hover,
-  .inspiration-choice:hover {
-    transform: translateY(-0.2rem);
-    border-color: rgba(223, 85, 156, 0.34);
-    box-shadow: 0 12px 30px rgba(106, 74, 61, 0.1);
-  }
-
-  .proposal-card picture,
-  .inspiration-choice picture {
-    width: 100%;
-    background: var(--cream);
-  }
-
-  .proposal-card img {
-    width: 100%;
-    height: 13.5rem;
-    object-fit: cover;
-  }
-
-  .proposal-card > span,
-  .inspiration-choice > span {
-    display: grid;
-    gap: 0.18rem;
-    padding: 0.75rem 0.8rem 0.85rem;
-  }
-
-  .proposal-card small,
-  .inspiration-choice small {
-    color: var(--pink-dark);
-    font-size: var(--text-caption);
-    font-weight: 850;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .proposal-card strong,
-  .inspiration-choice strong {
-    color: var(--brown-deep);
-    font-family: var(--serif);
-    font-size: 1.04rem;
-    font-weight: 400;
-    line-height: 1.15;
   }
 
   .experience-section {
@@ -1342,10 +1263,18 @@
 
   .product-choice-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(10.8rem, 68vw);
+    grid-template-rows: repeat(2, minmax(0, auto));
+    overflow-x: auto;
     gap: 0.7rem;
-    padding: 0.2rem;
+    margin-inline: -0.35rem;
+    padding: 0.2rem 0.35rem 0.85rem;
     border-radius: 1rem;
+    scroll-padding-inline: 0.35rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
     transition: box-shadow 180ms ease;
   }
 
@@ -1361,6 +1290,7 @@
     border: 1px solid var(--line);
     border-radius: 1rem;
     cursor: pointer;
+    scroll-snap-align: start;
     transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
   }
 
@@ -1541,46 +1471,6 @@
   .choice-chips input {
     position: absolute;
     opacity: 0;
-  }
-
-  .inspiration-field {
-    margin-top: 0.8rem;
-  }
-
-  .inspiration-choice {
-    flex-basis: min(48vw, 10.5rem);
-    background: var(--cream);
-  }
-
-  .inspiration-choice input {
-    position: absolute;
-    opacity: 0;
-  }
-
-  .inspiration-choice img {
-    width: 100%;
-    height: 7.4rem;
-    object-fit: cover;
-  }
-
-  .inspiration-choice > span {
-    padding: 0.55rem 0.6rem 0.65rem;
-  }
-
-  .inspiration-choice strong {
-    font-size: 0.94rem;
-  }
-
-  .inspiration-choice.is-selected,
-  .inspiration-choice:has(input:checked) {
-    border-color: var(--pink-dark);
-    box-shadow: 0 0 0 2px rgba(223, 85, 156, 0.12);
-  }
-
-  .inspiration-choice:focus-within,
-  .inspiration-choice:has(input:focus-visible) {
-    outline: 3px solid var(--pink);
-    outline-offset: 3px;
   }
 
   .choice-chips span {
@@ -1929,12 +1819,12 @@
   .gallery-item img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    transition: opacity 180ms ease;
+    object-fit: cover;
+    transition: transform 600ms ease;
   }
 
   .gallery-item:hover img {
-    transform: none;
+    transform: scale(1.045);
   }
 
   .gallery-item figcaption {
@@ -2204,9 +2094,13 @@
       max-width: 80rem;
     }
 
-    .product-grid,
     .testimonial-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-grid {
+      grid-auto-columns: calc((100% - 1rem) / 2);
+      grid-template-rows: repeat(2, minmax(0, auto));
     }
 
     .slots-grid {
@@ -2218,7 +2112,7 @@
     }
 
     .product-choice-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-columns: calc((100% - 0.7rem) / 2);
     }
 
     .gallery-grid {
@@ -2320,20 +2214,9 @@
       grid-template-columns: 1.4fr 0.6fr;
     }
 
-    .proposal-heading {
-      grid-template-columns: 1.1fr 0.9fr;
-    }
-
-    .proposal-card {
-      flex-basis: 17rem;
-    }
-
-    .proposal-card img {
-      height: 15rem;
-    }
-
     .product-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-auto-columns: calc((100% - 2rem) / 3);
+      grid-template-rows: repeat(2, minmax(0, auto));
     }
 
     .experience-grid {
@@ -2353,15 +2236,7 @@
     }
 
     .product-choice-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .inspiration-choice {
-      flex-basis: 10rem;
-    }
-
-    .inspiration-choice img {
-      height: 8rem;
+      grid-auto-columns: calc((100% - 1.4rem) / 3);
     }
 
     .slots-grid {
@@ -2432,8 +2307,6 @@
     .product-card,
     .product-image img,
     .product-choice,
-    .proposal-card,
-    .inspiration-choice,
     .gallery-item img,
     .slot-card {
       transition-duration: 180ms;
@@ -2441,8 +2314,6 @@
 
     .product-card:hover,
     .product-choice:hover,
-    .proposal-card:hover,
-    .inspiration-choice:hover,
     .slot-card:hover {
       transform: none;
     }

@@ -1,6 +1,5 @@
 ---
 import { availableProducts } from "../data/products";
-import { proposals } from "../data/proposals";
 import { site } from "../data/site";
 import OptimizedPicture from "./OptimizedPicture.astro";
 
@@ -40,14 +39,21 @@ const fillingOptions = [
         <div class="product-choice-grid">
           {availableProducts.map((product) => (
             <label class="product-choice" data-product-id={product.id}>
-              <input type="radio" name="product" value={product.name} required />
+              <input
+                type="radio"
+                name="product"
+                value={product.name}
+                data-base-price={product.basePrice}
+                data-price-label={product.price}
+                required
+              />
               <OptimizedPicture
                 src={product.image}
                 alt={product.alt}
                 width="680"
                 height="760"
                 loading="lazy"
-                sizes="(min-width: 64rem) 16rem, (min-width: 42rem) 33vw, 50vw"
+                sizes="(min-width: 64rem) 21rem, (min-width: 42rem) 45vw, 72vw"
               />
               <span>
                 <small>{product.badge}</small>
@@ -113,29 +119,6 @@ const fillingOptions = [
             ))}
           </div>
         </fieldset>
-        <fieldset class="choice-field inspiration-field">
-          <legend>Elige una inspiración visual <span>opcional</span></legend>
-          <div class="inspiration-rail" aria-label="Inspiraciones de diseño">
-            {proposals.map((proposal) => (
-              <label class="inspiration-choice">
-                <input type="radio" name="designReference" value={proposal.title} />
-                <OptimizedPicture
-                  src={proposal.image}
-                  alt={proposal.alt}
-                  width="720"
-                  height="760"
-                  loading="lazy"
-                  sizes="(min-width: 64rem) 9rem, 44vw"
-                />
-                <span>
-                  <small>{proposal.category}</small>
-                  <strong>{proposal.title}</strong>
-                </span>
-              </label>
-            ))}
-          </div>
-          <p class="field-note">Esta referencia no confirma el diseño automáticamente; Maison Steff revisará por Instagram si se puede realizar parecido.</p>
-        </fieldset>
         <div class="field">
           <label for="dedication">Mensaje, diseño o idea especial <span>opcional</span></label>
           <textarea id="dedication" name="dedication" rows="3" placeholder="Ejemplo: Happy Birthday Ana, flores rosadas, corazones o una idea parecida a mi referencia"></textarea>
@@ -178,9 +161,10 @@ const fillingOptions = [
           </div>
           <dl>
             <div><dt>Producto</dt><dd id="summary-product">Por elegir</dd></div>
+            <div><dt>Precio base</dt><dd id="summary-base-price">Por definir</dd></div>
             <div><dt>Relleno</dt><dd id="summary-filling">Chantilly sin recargo</dd></div>
-            <div><dt>Inspiración</dt><dd id="summary-design">Por definir</dd></div>
             <div><dt>Cantidad</dt><dd id="summary-quantity">1</dd></div>
+            <div><dt>Total estimado</dt><dd id="summary-total">Por definir</dd></div>
             <div><dt>Fecha</dt><dd id="summary-date">Por definir</dd></div>
             <div><dt>Ocasión</dt><dd id="summary-occasion">Cumpleaños</dd></div>
             <div><dt>Diseño</dt><dd id="summary-detail">Sin detalle especial</dd></div>
@@ -238,14 +222,14 @@ const fillingOptions = [
   const dateField = document.querySelector<HTMLInputElement>("#date");
   const productInputs = form ? [...form.querySelectorAll<HTMLInputElement>('input[name="product"]')] : [];
   const fillingInputs = form ? [...form.querySelectorAll<HTMLInputElement>('input[name="filling"]')] : [];
-  const designInputs = form ? [...form.querySelectorAll<HTMLInputElement>('input[name="designReference"]')] : [];
   const dateFormatter = new Intl.DateTimeFormat("es-HN", { dateStyle: "long", timeZone: "UTC" });
   const motionSafe = !window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const summaryElements: Record<string, HTMLElement | null> = {
     "summary-product": document.querySelector("#summary-product"),
+    "summary-base-price": document.querySelector("#summary-base-price"),
     "summary-filling": document.querySelector("#summary-filling"),
-    "summary-design": document.querySelector("#summary-design"),
     "summary-quantity": document.querySelector("#summary-quantity"),
+    "summary-total": document.querySelector("#summary-total"),
     "summary-date": document.querySelector("#summary-date"),
     "summary-occasion": document.querySelector("#summary-occasion"),
     "summary-detail": document.querySelector("#summary-detail"),
@@ -321,6 +305,16 @@ const fillingOptions = [
     return { label, surcharge, summary };
   };
 
+  const selectedProduct = () => {
+    const input = productInputs.find((item) => item.checked);
+    const basePrice = input ? Number(input.dataset.basePrice || 0) : 0;
+    return {
+      name: input ? input.value : "un detalle",
+      basePrice,
+      priceLabel: input ? input.dataset.priceLabel || `Desde L ${basePrice}` : "Por definir",
+    };
+  };
+
   const syncProductChoices = () => {
     productInputs.forEach((input) => {
       const choice = input.closest(".product-choice");
@@ -328,27 +322,18 @@ const fillingOptions = [
     });
   };
 
-  const syncDesignChoices = () => {
-    designInputs.forEach((input) => {
-      const choice = input.closest(".inspiration-choice");
-      if (choice) choice.classList.toggle("is-selected", input.checked);
-    });
-  };
-
-  const selectedDesign = () => {
-    const input = designInputs.find((item) => item.checked);
-    return input ? input.value : "";
-  };
-
   const updateSummary = () => {
     const data = formData();
     const filling = selectedFilling();
-    const design = selectedDesign();
+    const product = selectedProduct();
+    const quantityValue = Math.max(1, Number(data.get("quantity") || 1));
+    const estimatedTotal = product.basePrice > 0 ? (product.basePrice + filling.surcharge) * quantityValue : 0;
     const values: Record<string, string> = {
-      "summary-product": textValue(data.get("product"), "Por elegir"),
+      "summary-product": product.name === "un detalle" ? "Por elegir" : product.name,
+      "summary-base-price": product.priceLabel,
       "summary-filling": filling.summary,
-      "summary-design": design || "Por definir",
       "summary-quantity": textValue(data.get("quantity"), "1"),
+      "summary-total": estimatedTotal > 0 ? `L ${estimatedTotal}` : "Por definir",
       "summary-date": formatDate(data.get("date")),
       "summary-occasion": textValue(data.get("occasion"), "Por definir"),
       "summary-detail": textValue(data.get("dedication"), "Sin detalle especial"),
@@ -359,16 +344,15 @@ const fillingOptions = [
     });
     if (status) status.textContent = "";
     syncProductChoices();
-    syncDesignChoices();
   };
 
   const buildMessage = () => {
     const data = formData();
-    const product = data.get("product") || "un detalle";
-    const quantityValue = Number(data.get("quantity") || 1);
+    const product = selectedProduct();
+    const quantityValue = Math.max(1, Number(data.get("quantity") || 1));
     const occasion = (data.get("occasion") || "una ocasión especial").toString().toLowerCase();
     const filling = selectedFilling();
-    const design = selectedDesign();
+    const estimatedTotal = product.basePrice > 0 ? (product.basePrice + filling.surcharge) * quantityValue : 0;
     const dedicationValue = data.get("dedication");
     const dedication = dedicationValue ? dedicationValue.toString().trim() : "";
     const delivery = data.get("delivery") === "Recoger"
@@ -377,14 +361,15 @@ const fillingOptions = [
     const message = [
       "Hola Maison Steff, me gustaría reservar un detalle.",
       "",
-      `Quiero ${product}.`,
+      `Quiero ${product.name}.`,
+      `Precio base seleccionado: ${product.priceLabel}.`,
       quantityValue === 1 ? "Sería una unidad." : `Serían ${quantityValue} unidades.`,
       filling.surcharge > 0
         ? `Relleno: ${filling.label} (+L ${filling.surcharge} por unidad).`
         : `Relleno: ${filling.label} sin recargo.`,
+      estimatedTotal > 0 ? `Total estimado antes de entrega: L ${estimatedTotal}.` : "Total estimado: por confirmar.",
       `Lo necesito para el ${formatDate(data.get("date"))}.`,
       `La ocasión es un ${occasion}.`,
-      design ? `Inspiración visual: ${design}.` : "Inspiración visual: por definir.",
       ...(dedication ? [`Diseño o mensaje: ${dedication}.`] : ["Diseño o mensaje: lo podemos definir por Instagram."]),
       "Si tengo una imagen de referencia, la enviaré por Instagram para confirmar si se puede realizar.",
       "Entiendo que por ahora trabajan principalmente con chantilly y que las opciones con fondant o colores más vivos se consultarán más adelante.",
@@ -493,17 +478,6 @@ const fillingOptions = [
       product.checked = true;
       syncProductChoices();
       setStep(2);
-    }
-  }) as EventListener);
-
-  window.addEventListener("select-design", ((event: CustomEvent<string>) => {
-    const design = designInputs.find((input) => input.value === event.detail);
-    if (design) {
-      design.checked = true;
-      syncDesignChoices();
-      updateSummary();
-      if (productInputs.some((input) => input.checked)) setStep(2);
-      else setStep(1);
     }
   }) as EventListener);
 
