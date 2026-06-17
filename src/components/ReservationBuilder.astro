@@ -477,6 +477,7 @@ const fillingOptions = [
 
   const showPasteGuide = () => {
     if (!pasteGuide) return;
+    document.documentElement.classList.add("modal-open");
     if (typeof pasteGuide.showModal === "function") {
       pasteGuide.showModal();
       return;
@@ -486,6 +487,7 @@ const fillingOptions = [
 
   const closePasteGuide = () => {
     if (!pasteGuide) return;
+    document.documentElement.classList.remove("modal-open");
     if (typeof pasteGuide.close === "function") {
       pasteGuide.close();
       return;
@@ -499,6 +501,10 @@ const fillingOptions = [
 
   if (pasteGuide) pasteGuide.addEventListener("click", (event) => {
     if (event.target === pasteGuide) closePasteGuide();
+  });
+
+  if (pasteGuide) pasteGuide.addEventListener("close", () => {
+    document.documentElement.classList.remove("modal-open");
   });
 
   const openInstagramAfterCopy = document.querySelector("#open-instagram-after-copy");

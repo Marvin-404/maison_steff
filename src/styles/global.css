@@ -1644,11 +1644,16 @@
     font-weight: 700;
   }
 
+  html.modal-open,
+  html.modal-open body {
+    overflow: hidden;
+  }
+
   .paste-guide {
     width: min(calc(100% - 1.2rem), 46rem);
-    max-height: min(92vh, 50rem);
+    max-height: none;
     padding: 0;
-    overflow: auto;
+    overflow: visible;
     color: var(--brown-deep);
     background: transparent;
     border: 0;
@@ -1665,6 +1670,10 @@
 
   .paste-guide-card {
     position: relative;
+    max-height: min(91vh, 50rem);
+    max-height: min(91dvh, 50rem);
+    overflow: auto;
+    overscroll-behavior: contain;
     padding: clamp(1.35rem, 4vw, 2.35rem);
     text-align: center;
     background:
@@ -1673,6 +1682,29 @@
     border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 1.5rem;
     box-shadow: 0 28px 90px rgba(62, 42, 34, 0.28);
+    scrollbar-color: rgba(217, 156, 171, 0.56) rgba(255, 248, 242, 0.54);
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
+
+  .paste-guide-card::-webkit-scrollbar {
+    width: 0.42rem;
+  }
+
+  .paste-guide-card::-webkit-scrollbar-track {
+    margin-block: 1rem;
+    background: rgba(255, 248, 242, 0.58);
+    border-radius: 999px;
+  }
+
+  .paste-guide-card::-webkit-scrollbar-thumb {
+    background: linear-gradient(rgba(255, 215, 225, 0.9), rgba(217, 156, 171, 0.68));
+    border: 1px solid rgba(255, 248, 242, 0.9);
+    border-radius: 999px;
+  }
+
+  .paste-guide-card::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(var(--pink), var(--pink-dark));
   }
 
   .paste-guide-priority {
@@ -1828,15 +1860,16 @@
 
   .paste-guide-actions {
     position: sticky;
-    bottom: -0.1rem;
+    bottom: 0;
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.7rem;
     max-width: 36rem;
     margin: 1.25rem auto 0;
-    padding-top: 0.85rem;
-    background: linear-gradient(rgba(255, 253, 251, 0.88), var(--white) 38%);
+    padding: 0.85rem 0 0.1rem;
+    background: linear-gradient(rgba(255, 253, 251, 0), rgba(255, 253, 251, 0.96) 26%, var(--white) 58%);
     border-top: 1px solid rgba(106, 74, 61, 0.08);
+    border-radius: 0 0 1rem 1rem;
   }
 
   .paste-guide-actions .text-button {
