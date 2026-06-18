@@ -469,6 +469,18 @@
     box-shadow: 0 12px 45px rgba(62, 42, 34, 0.1);
     backdrop-filter: blur(20px);
     pointer-events: auto;
+    transform: translate3d(0, 0, 0);
+    transition:
+      opacity 220ms ease,
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 220ms ease;
+    will-change: transform, opacity;
+  }
+
+  .site-header--hidden .header-inner {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, calc(-100% - 1.4rem), 0);
   }
 
   .brand {

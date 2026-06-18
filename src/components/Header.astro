@@ -32,14 +32,21 @@ import OptimizedPicture from "./OptimizedPicture.astro";
       <a href="#reservar">Reservar</a>
     </nav>
     <a class="button button-small header-cta" href={site.instagramDmUrl} target="_blank" rel="noreferrer">
-      Pedir por Instagram
+      Reservar por Instagram
     </a>
   </div>
 </header>
 
 <script>
+  const header = document.querySelector<HTMLElement>(".site-header");
   const menu = document.querySelector<HTMLElement>("#main-nav");
   const menuToggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  let lastScrollY = window.scrollY || window.pageYOffset || 0;
+  let headerFrame = 0;
+
+  const showHeader = () => header?.classList.remove("site-header--hidden");
+  const hideHeader = () => header?.classList.add("site-header--hidden");
+  const menuIsOpen = () => Boolean(menu && menu.classList.contains("open"));
 
   const closeMenu = () => {
     if (menu) menu.classList.remove("open");
@@ -52,10 +59,44 @@ import OptimizedPicture from "./OptimizedPicture.astro";
   if (menuToggle) menuToggle.addEventListener("click", () => {
     const open = !(menu && menu.classList.contains("open"));
     if (menu) menu.classList.toggle("open", open);
+    showHeader();
     menuToggle.setAttribute("aria-expanded", String(open));
     menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
   });
 
   if (menu) menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
   document.addEventListener("keydown", (event) => event.key === "Escape" && closeMenu());
+
+  const updateHeaderVisibility = () => {
+    const currentScrollY = Math.max(window.scrollY || window.pageYOffset || 0, 0);
+    const distance = currentScrollY - lastScrollY;
+
+    if (currentScrollY < 96 || menuIsOpen() || header?.contains(document.activeElement)) {
+      showHeader();
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    if (Math.abs(distance) < 8) return;
+
+    if (distance > 0) {
+      hideHeader();
+    } else {
+      showHeader();
+    }
+
+    lastScrollY = currentScrollY;
+  };
+
+  const onScroll = () => {
+    if (headerFrame) return;
+    headerFrame = window.requestAnimationFrame(() => {
+      updateHeaderVisibility();
+      headerFrame = 0;
+    });
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", showHeader);
+  header?.addEventListener("focusin", showHeader);
 </script>
