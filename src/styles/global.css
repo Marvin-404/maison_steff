@@ -1868,6 +1868,18 @@
     resize: vertical;
   }
 
+  .message-preview-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 0.8rem 0.8rem;
+  }
+
+  .message-preview-actions .text-button {
+    min-height: 2.25rem;
+    padding-block: 0.2rem;
+    font-size: var(--text-small);
+  }
+
   .paste-copy-status {
     min-height: 1rem;
     margin: 0;

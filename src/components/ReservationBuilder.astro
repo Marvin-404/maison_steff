@@ -81,9 +81,10 @@ const fillingOptions = [
             <label for="quantity">Cantidad</label>
             <div class="quantity-control">
               <button type="button" data-quantity="-1" aria-label="Disminuir cantidad">−</button>
-              <input id="quantity" name="quantity" type="number" min="1" value="1" required />
+              <input id="quantity" name="quantity" type="number" min="1" max="20" value="1" required />
               <button type="button" data-quantity="1" aria-label="Aumentar cantidad">+</button>
             </div>
+            <p class="field-note">Para más de 20 unidades, consulta disponibilidad por Instagram.</p>
           </div>
           <div class="field">
             <label for="date">Fecha deseada</label>
@@ -199,8 +200,8 @@ const fillingOptions = [
         <span class="paste-guide-icon" aria-hidden="true">✓</span>
         <div>
           <p class="paste-guide-kicker">Mensaje copiado</p>
-          <h2 id="paste-guide-title">No se perdió tu reserva.</h2>
-          <p class="paste-guide-helper" id="paste-guide-helper">Tu solicitud ya está lista. Solo falta pegarla en Instagram y enviarla.</p>
+          <h2 id="paste-guide-title">Tu reserva no se perdió.</h2>
+          <p class="paste-guide-helper" id="paste-guide-helper">El mensaje ya está copiado. Ahora solo debes pegarlo en Instagram y enviarlo.</p>
         </div>
       </div>
       <div class="paste-guide-steps" aria-label="Cómo pegar el mensaje en Instagram">
@@ -210,6 +211,9 @@ const fillingOptions = [
       <details class="message-preview">
         <summary>Ver mensaje copiado</summary>
         <textarea id="copied-message-preview" readonly rows="8" aria-label="Mensaje de reserva copiado"></textarea>
+        <div class="message-preview-actions">
+          <button class="text-button" type="button" id="select-copied-message">Seleccionar mensaje</button>
+        </div>
       </details>
       <p class="copy-status paste-copy-status" id="paste-copy-status" role="status"></p>
       <div class="paste-guide-actions">
@@ -231,9 +235,13 @@ const fillingOptions = [
   const progress = document.querySelector<HTMLElement>("#step-progress-bar");
   const status = document.querySelector<HTMLElement>("#copy-status");
   const pasteGuide = document.querySelector<HTMLDialogElement>("#paste-guide");
+  const pasteGuideKicker = document.querySelector<HTMLElement>(".paste-guide-kicker");
+  const pasteGuideHelper = document.querySelector<HTMLElement>("#paste-guide-helper");
+  const messagePreview = document.querySelector<HTMLDetailsElement>(".message-preview");
   const copiedMessagePreview = document.querySelector<HTMLTextAreaElement>("#copied-message-preview");
   const pasteCopyStatus = document.querySelector<HTMLElement>("#paste-copy-status");
   const copyMessageAgain = document.querySelector<HTMLButtonElement>("#copy-message-again");
+  const selectCopiedMessage = document.querySelector<HTMLButtonElement>("#select-copied-message");
   const quantity = document.querySelector<HTMLInputElement>("#quantity");
   const dateField = document.querySelector<HTMLInputElement>("#date");
   const productInputs = form ? [...form.querySelectorAll<HTMLInputElement>('input[name="product"]')] : [];
@@ -251,6 +259,8 @@ const fillingOptions = [
     "summary-detail": document.querySelector("#summary-detail"),
   };
   const stepTitles = ["Elige tu favorito", "Personaliza tu detalle", "Revisa tu solicitud"];
+  const minQuantity = 1;
+  const maxQuantity = 20;
   let activeStep = 1;
   let lastReservationMessage = "";
 
@@ -314,6 +324,17 @@ const fillingOptions = [
     return value ? value.toString() : fallback;
   };
 
+  const boundedQuantity = (value: FormDataEntryValue | number | null) => {
+    const parsed = Number(value || minQuantity);
+    if (!Number.isFinite(parsed)) return minQuantity;
+    return Math.min(maxQuantity, Math.max(minQuantity, Math.floor(parsed)));
+  };
+
+  const normalizeQuantityField = () => {
+    if (!quantity || !quantity.value) return;
+    quantity.value = String(boundedQuantity(quantity.value));
+  };
+
   const selectedFilling = () => {
     const input = fillingInputs.find((item) => item.checked);
     const label = input ? input.value : "Chantilly";
@@ -343,13 +364,13 @@ const fillingOptions = [
     const data = formData();
     const filling = selectedFilling();
     const product = selectedProduct();
-    const quantityValue = Math.max(1, Number(data.get("quantity") || 1));
+    const quantityValue = boundedQuantity(data.get("quantity"));
     const estimatedTotal = product.basePrice > 0 ? (product.basePrice + filling.surcharge) * quantityValue : 0;
     const values: Record<string, string> = {
       "summary-product": product.name === "un detalle" ? "Por elegir" : product.name,
       "summary-base-price": product.priceLabel,
       "summary-filling": filling.summary,
-      "summary-quantity": textValue(data.get("quantity"), "1"),
+      "summary-quantity": String(quantityValue),
       "summary-total": estimatedTotal > 0 ? `L ${estimatedTotal}` : "Por definir",
       "summary-date": formatDate(data.get("date")),
       "summary-occasion": textValue(data.get("occasion"), "Por definir"),
@@ -393,7 +414,7 @@ const fillingOptions = [
   const getReservationData = (): ReservationMessageData => {
     const data = formData();
     const product = selectedProduct();
-    const quantityValue = Math.max(1, Number(data.get("quantity") || 1));
+    const quantityValue = boundedQuantity(data.get("quantity"));
     const filling = selectedFilling();
     const estimatedTotal = product.basePrice > 0 ? (product.basePrice + filling.surcharge) * quantityValue : 0;
     return {
@@ -441,7 +462,7 @@ const fillingOptions = [
       `${productLine} ${quantityLine}`,
       `${fillingLine} ${totalLine}`,
       personalDetails,
-      "También puedo enviarles una imagen de referencia por Instagram para que me confirmen si se puede realizar. Entiendo que por ahora trabajan principalmente con chantilly y que las opciones con fondant o colores más vivos se pueden consultar.",
+      "Si tengo una imagen de referencia, también puedo enviarla por aquí para que me confirmen si se puede realizar. Entiendo que por ahora trabajan principalmente con chantilly y que las opciones con fondant o colores más vivos se pueden consultar.",
       deliveryDetails,
       "¿Me podrían confirmar disponibilidad y precio final, por favor?",
     ].filter(Boolean).join("\n\n");
@@ -475,6 +496,27 @@ const fillingOptions = [
     pasteGuide.setAttribute("open", "");
   };
 
+  const setPasteGuideState = (copied: boolean) => {
+    if (pasteGuideKicker) pasteGuideKicker.textContent = copied ? "Mensaje copiado" : "Mensaje listo para copiar";
+    if (pasteGuideHelper) {
+      pasteGuideHelper.textContent = copied
+        ? "El mensaje ya está copiado. Ahora solo debes pegarlo en Instagram y enviarlo."
+        : "No pudimos copiar automáticamente, pero tu mensaje está listo. Selecciónalo, cópialo manualmente y pégalo en Instagram.";
+    }
+    if (messagePreview) messagePreview.open = !copied;
+  };
+
+  const prepareMessagePreview = () => {
+    if (copiedMessagePreview) copiedMessagePreview.value = lastReservationMessage;
+  };
+
+  const selectMessageForManualCopy = () => {
+    if (!copiedMessagePreview) return;
+    if (messagePreview) messagePreview.open = true;
+    copiedMessagePreview.focus();
+    copiedMessagePreview.select();
+  };
+
   const closePasteGuide = () => {
     if (!pasteGuide) return;
     document.documentElement.classList.remove("modal-open");
@@ -505,16 +547,23 @@ const fillingOptions = [
 
   if (copyMessageAgain) copyMessageAgain.addEventListener("click", () => {
     if (!lastReservationMessage) return;
+    prepareMessagePreview();
     copyMessage(lastReservationMessage).then(
       () => {
+        setPasteGuideState(true);
         if (pasteCopyStatus) pasteCopyStatus.textContent = "Mensaje copiado correctamente.";
         if (status) status.textContent = "Mensaje copiado correctamente.";
       },
       () => {
-        if (pasteCopyStatus) pasteCopyStatus.textContent = "No pudimos copiar de nuevo. Puedes seleccionar el mensaje y copiarlo manualmente.";
+        setPasteGuideState(false);
+        selectMessageForManualCopy();
+        if (pasteCopyStatus) pasteCopyStatus.textContent = "No pudimos copiar automáticamente, pero tu mensaje está listo para copiar manualmente.";
+        if (status) status.textContent = "No pudimos copiar automáticamente. Selecciona el mensaje y cópialo manualmente.";
       },
     );
   });
+
+  if (selectCopiedMessage) selectCopiedMessage.addEventListener("click", selectMessageForManualCopy);
 
   document.querySelectorAll<HTMLButtonElement>(".next-step").forEach((button) => {
     button.addEventListener("click", () => {
@@ -529,12 +578,13 @@ const fillingOptions = [
   document.querySelectorAll<HTMLButtonElement>("[data-quantity]").forEach((button) => {
     button.addEventListener("click", () => {
       if (!quantity) return;
-      quantity.value = String(Math.max(1, Number(quantity.value || 1) + Number(button.dataset.quantity)));
+      quantity.value = String(boundedQuantity(Number(quantity.value || minQuantity) + Number(button.dataset.quantity)));
       updateSummary();
     });
   });
 
   if (form) form.addEventListener("input", (event) => {
+    if ((event.target as HTMLInputElement).name === "quantity") normalizeQuantityField();
     if ((event.target as HTMLInputElement).name === "product") {
       const choiceGrid = form.querySelector(".product-choice-grid");
       if (choiceGrid) choiceGrid.classList.remove("needs-attention");
@@ -566,13 +616,18 @@ const fillingOptions = [
     lastReservationMessage = buildReservationMessage(getReservationData());
     copyMessage(lastReservationMessage).then(
       () => {
-        if (copiedMessagePreview) copiedMessagePreview.value = lastReservationMessage;
+        prepareMessagePreview();
+        setPasteGuideState(true);
         if (pasteCopyStatus) pasteCopyStatus.textContent = "Mensaje copiado correctamente.";
         if (status) status.textContent = "Mensaje copiado correctamente. Lee la indicación antes de abrir Instagram.";
         showPasteGuide();
       },
       () => {
-        if (status) status.textContent = "No pudimos copiar automáticamente. Revisa los datos e inténtalo nuevamente.";
+        prepareMessagePreview();
+        setPasteGuideState(false);
+        if (pasteCopyStatus) pasteCopyStatus.textContent = "No pudimos copiar automáticamente, pero tu mensaje está listo. Selecciónalo, cópialo manualmente y pégalo en Instagram.";
+        if (status) status.textContent = "No pudimos copiar automáticamente. Tu mensaje está listo para copiar manualmente.";
+        showPasteGuide();
       },
     );
   });
