@@ -1,10 +1,12 @@
 # Maison Steff
 
-Landing premium de ventas para Maison Steff, construida con Astro, fotografías reales y conversión directa hacia Instagram.
+Landing premium para Maison Steff, una pastelería boutique de pasteles artesanales individuales. El sitio está construido con Astro, fotografías reales, animaciones GSAP, catálogo filtrable y un flujo de reserva estático orientado a Instagram.
 
-La experiencia incluye una portada de marca controlada por scroll, textos y productos animados con GSAP, catálogo filtrable y una reserva guiada de tres pasos que copia la solicitud antes de abrir Instagram.
+Sitio publicado: https://marvin-404.github.io/maison_steff/
 
-## Ejecutar localmente
+Repositorio oficial: https://github.com/Marvin-404/maison_steff
+
+## Ejecutar Localmente
 
 Requiere Node.js 22.12 o superior.
 
@@ -13,50 +15,224 @@ npm install
 npm run dev
 ```
 
-Abre `http://localhost:4321/maison_steff/`.
+Abrir:
 
-Para revisar la versión final compilada:
+```text
+http://localhost:4321/maison_steff/
+```
+
+Para revisar la versión compilada:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Editar contenido
+## Flujo De Reserva
 
-- Productos, precios, etiquetas, filtros y disponibilidad: `src/data/products.ts`
-- Fotografías y composición de la galería: `src/data/gallery.ts`
-- Cupos, estado de agenda, Instagram, testimonios y preguntas: `src/data/site.ts`
-- Fotografías, logo y QR reales: `public/images/real/`
-- Colores, responsive y dirección visual: `src/styles/global.css`
-- Animaciones GSAP e intro de marca: `src/scripts/motion.ts`
-- Flujo guiado de reserva: `src/components/ReservationBuilder.astro`
+El sitio no usa backend, base de datos, carrito ni WhatsApp. La reserva funciona así:
 
-Para agregar un sabor, guarda su fotografía optimizada en `public/images/real/` y agrega un objeto en `src/data/products.ts`. El catálogo y la reserva lo mostrarán automáticamente. Usa `available: false` para ocultar temporalmente un producto sin borrarlo.
+1. El cliente elige un producto.
+2. Completa la solicitud guiada.
+3. La web genera un mensaje humano para Instagram.
+4. La web intenta copiar el mensaje al portapapeles.
+5. Se muestra el modal “Tu reserva no se perdió”.
+6. El cliente pega el mensaje en Instagram y lo envía.
 
-Para agregar una fotografía a la galería, agrega un objeto en `src/data/gallery.ts`. El campo opcional `layout` acepta `standard`, `tall` o `wide`.
+Si el navegador no permite copiar automáticamente, el mensaje queda visible en la vista previa y se puede seleccionar manualmente.
 
-Mantén cada `id` único. Las rutas de imagen deben comenzar con `images/real/` y los filtros disponibles son `regalo`, `clasicos`, `especiales` y `pedidos`.
+## Archivos Principales
 
-Para cambiar Instagram, edita `instagramHandle`, `instagramUrl` e `instagramDmUrl` en `src/data/site.ts`.
+- `src/pages/index.astro`: orden de las secciones.
+- `src/layouts/BaseLayout.astro`: SEO, Open Graph, JSON-LD, scripts base y estilos globales.
+- `src/components/ReservationBuilder.astro`: formulario guiado, mensaje copiable y modal de Instagram.
+- `src/components/ProductCatalog.astro`: filtros del catálogo y selección de producto.
+- `src/components/ProductCard.astro`: tarjeta clickeable del producto.
+- `src/components/BrandIntro.astro`: intro visual del logo.
+- `src/components/HeroCinematic.astro`: hero principal.
+- `src/scripts/motion.ts`: animaciones GSAP y reveal on scroll.
+- `src/styles/global.css`: sistema visual, responsive y estados interactivos.
 
-## GitHub Pages
+## Editar Productos
 
-Repositorio oficial: `https://github.com/Marvin-404/maison_steff`
+Los productos viven en:
 
-El sitio es completamente estático. `astro.config.mjs` configura automáticamente el base path `/maison_steff/` y el workflow `.github/workflows/deploy.yml` publica cada cambio enviado a `main`.
+```text
+src/data/products.ts
+```
 
-En **Settings > Pages**, selecciona **GitHub Actions** como fuente. La reserva no requiere backend: genera una solicitud, la copia al portapapeles y abre `https://ig.me/m/maison_steff` para completar el pedido por DM.
+Para agregar un producto:
 
-### Publicar cambios futuros
+1. Copia un objeto existente dentro de `products`.
+2. Cambia `id`, `name`, `category`, `filters`, `description`, `price`, `basePrice`, `badge`, `image` y `alt`.
+3. Mantén cada `id` único.
+4. Usa rutas de imagen desde `images/real/`.
 
-Esta carpeta ya está conectada al repositorio oficial `Marvin-404/maison_steff` en la rama `main`. Para publicar cambios futuros:
+Filtros disponibles:
+
+```text
+regalo
+clasicos
+especiales
+pedidos
+```
+
+Para ocultar un producto sin borrarlo:
+
+```ts
+available: false
+```
+
+El catálogo, la galería y el formulario de reserva se actualizan desde esos datos.
+
+## Agregar Imágenes
+
+Las imágenes reales van en:
+
+```text
+public/images/real/
+```
+
+Las variantes WebP optimizadas van en:
+
+```text
+public/images/optimized/
+```
+
+Después de agregar una imagen nueva, registra sus variantes en:
+
+```text
+src/utils/optimizedImages.ts
+```
+
+Ejemplo:
+
+```ts
+"images/real/nuevo-pastel.jpg": {
+  webp: image("nuevo-pastel", [360, 540, 720]),
+},
+```
+
+Convención recomendada para archivos optimizados:
+
+```text
+nuevo-pastel-360.webp
+nuevo-pastel-540.webp
+nuevo-pastel-720.webp
+```
+
+Si no registras la imagen en `optimizedImages.ts`, el sitio usará la imagen original como fallback.
+
+## Editar Galería
+
+La galería se genera desde los productos disponibles mediante:
+
+```text
+src/data/gallery.ts
+src/data/proposals.ts
+```
+
+Los layouts destacados se controlan en `featuredLayouts`:
+
+```ts
+standard
+tall
+wide
+```
+
+## Editar Cupos, Instagram Y Textos Globales
+
+Archivo:
+
+```text
+src/data/site.ts
+```
+
+Aquí puedes cambiar:
+
+- Instagram oficial.
+- Link directo a DM.
+- Cupos disponibles.
+- Tiempo de anticipación.
+- Estado de agenda.
+- Testimonios.
+- Preguntas frecuentes.
+- Título y descripción SEO.
+
+Campos importantes:
+
+```ts
+instagramHandle
+instagramUrl
+instagramDmUrl
+slots.available
+slots.leadTime
+slots.status
+```
+
+## Publicar En GitHub Pages
+
+El proyecto está configurado para el repositorio:
+
+```text
+Marvin-404/maison_steff
+```
+
+`astro.config.mjs` usa:
+
+```js
+base: "/maison_steff"
+```
+
+El workflow `.github/workflows/deploy.yml` publica automáticamente cada push a `main`.
+
+Para publicar cambios:
 
 ```bash
 git status
 git add .
-git commit -m "Mejora la experiencia de Maison Steff"
+git commit -m "Describe el cambio"
 git push origin main
 ```
 
-Repositorio remoto verificado: `https://github.com/Marvin-404/maison_steff.git`.
+En GitHub, Pages debe estar configurado con fuente:
+
+```text
+GitHub Actions
+```
+
+## Archivos Delicados
+
+Tocar con cuidado:
+
+- `src/components/BrandIntro.astro`: intro del logo.
+- `src/components/HeroCinematic.astro`: primera impresión del sitio.
+- `src/scripts/motion.ts`: animaciones GSAP.
+- `src/styles/global.css`: identidad visual, responsive y animaciones CSS.
+- `src/components/ReservationBuilder.astro`: flujo de conversión hacia Instagram.
+- `astro.config.mjs`: base path de GitHub Pages.
+
+Antes de modificar estos archivos, ejecuta:
+
+```bash
+npm run build
+```
+
+Y revisa el sitio en móvil.
+
+## Checklist Antes De Publicar
+
+- `npm run build` pasa sin errores.
+- El sitio abre en `/maison_steff/`.
+- No hay overflow horizontal en móvil.
+- El catálogo filtra correctamente.
+- Al tocar una tarjeta, se selecciona el producto correcto.
+- La reserva genera un mensaje humano.
+- El modal indica que la reserva no se perdió.
+- Si copiar falla, el mensaje se puede seleccionar manualmente.
+- Los links de Instagram apuntan a `maison_steff`.
+- Las imágenes cargan con rutas del base path.
+
+## Nota De Negocio
+
+Maison Steff funciona por reserva y disponibilidad. La web es informativa y estática; la confirmación final ocurre manualmente por Instagram.

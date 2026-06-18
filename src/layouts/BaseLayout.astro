@@ -11,6 +11,33 @@ interface Props {
 const { title = site.title, description = site.description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(withBase("images/real/fresa-clasica-fruta.jpg"), Astro.site);
+const logoImage = new URL(withBase("images/real/maison-steff-logo.png"), Astro.site);
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${canonical.toString()}#organization`,
+      name: site.name,
+      url: canonical.toString(),
+      logo: logoImage.toString(),
+      image: ogImage.toString(),
+      description,
+      sameAs: [site.instagramUrl],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${canonical.toString()}#website`,
+      name: site.name,
+      url: canonical.toString(),
+      description,
+      publisher: {
+        "@id": `${canonical.toString()}#organization`,
+      },
+      inLanguage: "es-HN",
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -49,6 +76,7 @@ const ogImage = new URL(withBase("images/real/fresa-clasica-fruta.jpg"), Astro.s
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#fff8f2" />
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
     <meta name="generator" content={Astro.generator} />
     <link
       rel="preload"
@@ -59,16 +87,21 @@ const ogImage = new URL(withBase("images/real/fresa-clasica-fruta.jpg"), Astro.s
     />
     <link rel="icon" type="image/png" href={withBase("images/real/maison-steff-logo.png")} />
     <link rel="canonical" href={canonical} />
+    <meta property="og:locale" content="es_HN" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="Pastel artesanal Maison Steff con presentación premium" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="Pastel artesanal Maison Steff con presentación premium" />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
