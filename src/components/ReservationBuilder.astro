@@ -192,28 +192,23 @@ const fillingOptions = [
     </form>
   </div>
 
-  <dialog class="paste-guide" id="paste-guide" aria-labelledby="paste-guide-title" aria-describedby="paste-guide-instruction paste-guide-helper">
+  <dialog class="paste-guide" id="paste-guide" aria-labelledby="paste-guide-title" aria-describedby="paste-guide-helper">
     <div class="paste-guide-card">
       <button class="paste-guide-close" type="button" aria-label="Cerrar indicación" data-close-paste-guide>×</button>
-      <div class="paste-guide-priority" role="status">
-        <span>Antes de abrir Instagram</span>
-        <strong id="paste-guide-instruction">Tu mensaje de reserva ya fue copiado.</strong>
+      <div class="paste-guide-main" role="status">
+        <span class="paste-guide-icon" aria-hidden="true">✓</span>
+        <div>
+          <p class="paste-guide-kicker">Mensaje copiado</p>
+          <h2 id="paste-guide-title">No se perdió tu reserva.</h2>
+          <p class="paste-guide-helper" id="paste-guide-helper">Tu solicitud ya está lista. Solo falta pegarla en Instagram y enviarla.</p>
+        </div>
       </div>
-      <span class="paste-guide-icon" aria-hidden="true">✓</span>
-      <p class="paste-guide-kicker">Mensaje copiado</p>
-      <h2 id="paste-guide-title">No se perdió tu reserva.</h2>
-      <p class="paste-guide-helper" id="paste-guide-helper">
-        Cuando se abra Instagram, entra al chat de Maison Steff, pega el mensaje copiado y presiona enviar.
-      </p>
       <div class="paste-guide-steps" aria-label="Cómo pegar el mensaje en Instagram">
-        <p>
-          <strong>En computadora:</strong> presiona Ctrl + V o haz clic derecho y elige “Pegar”.<br />
-          <strong>En celular:</strong> mantén presionado en el chat y toca “Pegar”.
-        </p>
+        <p><strong>Computadora</strong> Ctrl + V o clic derecho y “Pegar”.</p>
+        <p><strong>Celular</strong> Mantén presionado el chat y toca “Pegar”.</p>
       </div>
-      <p class="paste-guide-reassurance">Tu información ya está lista para enviarse.</p>
       <details class="message-preview">
-        <summary>Ver mensaje antes de abrir Instagram</summary>
+        <summary>Ver mensaje copiado</summary>
         <textarea id="copied-message-preview" readonly rows="8" aria-label="Mensaje de reserva copiado"></textarea>
       </details>
       <p class="copy-status paste-copy-status" id="paste-copy-status" role="status"></p>
@@ -236,7 +231,6 @@ const fillingOptions = [
   const progress = document.querySelector<HTMLElement>("#step-progress-bar");
   const status = document.querySelector<HTMLElement>("#copy-status");
   const pasteGuide = document.querySelector<HTMLDialogElement>("#paste-guide");
-  const pasteInstruction = document.querySelector<HTMLElement>("#paste-guide-instruction");
   const copiedMessagePreview = document.querySelector<HTMLTextAreaElement>("#copied-message-preview");
   const pasteCopyStatus = document.querySelector<HTMLElement>("#paste-copy-status");
   const copyMessageAgain = document.querySelector<HTMLButtonElement>("#copy-message-again");
@@ -471,10 +465,6 @@ const fillingOptions = [
     if (!copied) throw new Error("No se pudo copiar el mensaje");
   };
 
-  const pasteHelp = () => {
-    return "Tu mensaje de reserva ya fue copiado. Ahora solo falta pegarlo en Instagram y enviarlo.";
-  };
-
   const showPasteGuide = () => {
     if (!pasteGuide) return;
     document.documentElement.classList.add("modal-open");
@@ -576,7 +566,6 @@ const fillingOptions = [
     lastReservationMessage = buildReservationMessage(getReservationData());
     copyMessage(lastReservationMessage).then(
       () => {
-        if (pasteInstruction) pasteInstruction.textContent = pasteHelp();
         if (copiedMessagePreview) copiedMessagePreview.value = lastReservationMessage;
         if (pasteCopyStatus) pasteCopyStatus.textContent = "Mensaje copiado correctamente.";
         if (status) status.textContent = "Mensaje copiado correctamente. Lee la indicación antes de abrir Instagram.";

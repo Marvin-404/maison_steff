@@ -105,10 +105,17 @@
     background: linear-gradient(var(--pink), var(--scrollbar-thumb-hover));
   }
 
+  html::-webkit-scrollbar-button,
+  body::-webkit-scrollbar-button,
+  dialog::-webkit-scrollbar-button,
+  .paste-guide::-webkit-scrollbar-button,
+  .paste-guide-card::-webkit-scrollbar-button,
+  .message-preview textarea::-webkit-scrollbar-button,
   *::-webkit-scrollbar-button {
     display: none;
     width: 0;
     height: 0;
+    background: transparent;
   }
 
   *::-webkit-scrollbar-corner {
@@ -1694,7 +1701,7 @@
   }
 
   .paste-guide {
-    width: min(calc(100% - 1.2rem), 46rem);
+    width: min(calc(100% - 1.2rem), 56rem);
     max-height: none;
     padding: 0;
     overflow: visible;
@@ -1714,11 +1721,11 @@
 
   .paste-guide-card {
     position: relative;
-    max-height: min(91vh, 50rem);
-    max-height: min(91dvh, 50rem);
-    overflow: auto;
+    display: grid;
+    gap: 1rem;
+    overflow: visible;
     overscroll-behavior: contain;
-    padding: clamp(1.35rem, 4vw, 2.35rem);
+    padding: clamp(1.15rem, 3vw, 2rem);
     text-align: center;
     background:
       radial-gradient(circle at 50% 0%, rgba(247, 134, 194, 0.18), transparent 38%),
@@ -1726,36 +1733,15 @@
     border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 1.5rem;
     box-shadow: 0 28px 90px rgba(62, 42, 34, 0.28);
-    scrollbar-color: rgba(217, 156, 171, 0.56) rgba(255, 248, 242, 0.54);
-    scrollbar-gutter: stable;
-    scrollbar-width: thin;
   }
 
-  .paste-guide-card::-webkit-scrollbar {
-    width: 0.42rem;
-  }
-
-  .paste-guide-card::-webkit-scrollbar-track {
-    margin-block: 1rem;
-    background: rgba(255, 248, 242, 0.58);
-    border-radius: 999px;
-  }
-
-  .paste-guide-card::-webkit-scrollbar-thumb {
-    background: linear-gradient(rgba(255, 215, 225, 0.9), rgba(217, 156, 171, 0.68));
-    border: 1px solid rgba(255, 248, 242, 0.9);
-    border-radius: 999px;
-  }
-
-  .paste-guide-card::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(var(--pink), var(--pink-dark));
-  }
-
-  .paste-guide-priority {
+  .paste-guide-main {
     display: grid;
-    gap: 0.45rem;
-    margin-bottom: 1.05rem;
-    padding: 1rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1.1rem;
+    padding: clamp(1rem, 3vw, 1.6rem);
+    text-align: left;
     color: var(--brown-deep);
     background:
       linear-gradient(135deg, rgba(255, 215, 225, 0.96), rgba(255, 248, 242, 0.96)),
@@ -1763,21 +1749,6 @@
     border: 1px solid rgba(223, 85, 156, 0.2);
     border-radius: 1rem;
     box-shadow: 0 16px 36px rgba(106, 74, 61, 0.1);
-  }
-
-  .paste-guide-priority span {
-    color: var(--pink-dark);
-    font-size: var(--text-caption);
-    font-weight: 900;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .paste-guide-priority strong {
-    font-family: var(--serif);
-    font-size: clamp(1.35rem, 4.8vw, 2rem);
-    font-weight: 400;
-    line-height: 1.08;
   }
 
   .paste-guide-close {
@@ -1797,10 +1768,9 @@
 
   .paste-guide-icon {
     display: grid;
-    width: 3.85rem;
-    height: 3.85rem;
+    width: clamp(3.1rem, 7vw, 4.25rem);
+    height: clamp(3.1rem, 7vw, 4.25rem);
     place-items: center;
-    margin: 0 auto 1rem;
     color: white;
     background: linear-gradient(135deg, var(--pink), var(--pink-dark));
     border-radius: 50%;
@@ -1818,9 +1788,8 @@
   }
 
   .paste-guide h2 {
-    margin-block: 0.5rem 0.85rem;
-    font-size: 2.25rem;
-    font-size: clamp(2.25rem, 8vw, 3.65rem);
+    margin-block: 0.22rem 0.35rem;
+    font-size: clamp(2.1rem, 5.2vw, 4.6rem);
     line-height: 0.95;
   }
 
@@ -1834,9 +1803,9 @@
 
   .paste-guide-steps {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.55rem;
-    max-width: 36rem;
-    margin: 1rem auto;
+    margin: 0;
     text-align: left;
   }
 
@@ -1855,17 +1824,8 @@
     color: var(--brown-deep);
   }
 
-  .paste-guide-reassurance {
-    padding: 0.8rem 1rem;
-    color: var(--brown-deep) !important;
-    background: rgba(255, 215, 225, 0.5);
-    border-radius: 0.85rem;
-    font-weight: 850;
-  }
-
   .message-preview {
-    max-width: 36rem;
-    margin: 1rem auto 0;
+    margin: 0;
     text-align: left;
     background: var(--cream);
     border: 1px solid var(--line);
@@ -1874,7 +1834,7 @@
 
   .message-preview summary {
     cursor: pointer;
-    padding: 0.85rem 1rem;
+    padding: 0.7rem 0.95rem;
     color: var(--pink-dark);
     font-size: var(--text-small);
     font-weight: 850;
@@ -1882,7 +1842,8 @@
 
   .message-preview textarea {
     width: calc(100% - 1.6rem);
-    min-height: 12rem;
+    min-height: 9rem;
+    max-height: 15rem;
     margin: 0 0.8rem 0.8rem;
     padding: 0.85rem;
     color: var(--brown-deep);
@@ -1896,27 +1857,24 @@
   }
 
   .paste-copy-status {
-    min-height: 1.35rem;
-    margin: 0.85rem 0 0;
+    min-height: 1rem;
+    margin: 0;
     color: var(--pink-dark);
     text-align: center;
   }
 
   .paste-guide-actions {
-    position: sticky;
-    bottom: 0;
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
     gap: 0.7rem;
-    max-width: 36rem;
-    margin: 1.25rem auto 0;
-    padding: 0.85rem 0 0.1rem;
-    background: linear-gradient(rgba(255, 253, 251, 0), rgba(255, 253, 251, 0.96) 26%, var(--white) 58%);
+    margin: 0;
+    padding-top: 0.75rem;
+    background: transparent;
     border-top: 1px solid rgba(106, 74, 61, 0.08);
-    border-radius: 0 0 1rem 1rem;
   }
 
   .paste-guide-actions .text-button {
+    grid-column: 1 / -1;
     justify-content: center;
   }
 
@@ -2456,23 +2414,21 @@
 
   @media (max-width: 30rem) {
     .paste-guide-card {
+      gap: 0.75rem;
       padding: 1rem;
     }
 
-    .paste-guide-priority {
-      gap: 0.28rem;
-      margin-bottom: 0.65rem;
-      padding: 0.72rem;
-    }
-
-    .paste-guide-priority strong {
-      font-size: 1.22rem;
+    .paste-guide-main {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 0.65rem;
+      padding: 0.85rem;
+      text-align: center;
     }
 
     .paste-guide-icon {
       width: 2.75rem;
       height: 2.75rem;
-      margin-bottom: 0.55rem;
       font-size: 1.08rem;
     }
 
@@ -2487,14 +2443,10 @@
     }
 
     .paste-guide-steps {
-      margin-block: 0.7rem;
+      grid-template-columns: 1fr;
     }
 
     .paste-guide-steps p {
-      padding: 0.65rem 0.75rem;
-    }
-
-    .paste-guide-reassurance {
       padding: 0.65rem 0.75rem;
     }
 
@@ -2503,6 +2455,7 @@
     }
 
     .paste-guide-actions {
+      grid-template-columns: 1fr;
       gap: 0.55rem;
       padding-top: 0.65rem;
     }
