@@ -54,9 +54,10 @@ import { availableProducts, catalogFilters } from "../data/products";
     });
   });
 
-  document.querySelectorAll<HTMLButtonElement>(".reserve-product").forEach((button) => {
-    button.addEventListener("click", () => {
-      window.dispatchEvent(new CustomEvent("select-product", { detail: button.dataset.product }));
+  productCards.forEach((card) => {
+    card.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.dispatchEvent(new CustomEvent("select-product", { detail: card.dataset.product }));
       const reservation = document.querySelector("#reservar");
       if (reservation) reservation.scrollIntoView({ behavior: motionSafe ? "smooth" : "auto" });
     });

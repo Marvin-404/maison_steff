@@ -9,11 +9,14 @@ interface Props {
 const { product } = Astro.props;
 ---
 
-<article
+<a
   class="product-card"
+  href="#reservar"
   data-product-id={product.id}
+  data-product={product.name}
   data-product-price={product.basePrice}
   data-filters={product.filters.join(" ")}
+  aria-label={`Reservar ${product.name}`}
   data-reveal
 >
   <div class="product-image">
@@ -33,14 +36,9 @@ const { product } = Astro.props;
     <p>{product.description}</p>
     <div class="product-footer">
       <strong>{product.price}</strong>
-      <button
-        class="text-button reserve-product"
-        type="button"
-        data-product={product.name}
-        data-product-price={product.basePrice}
-      >
+      <span class="text-button reserve-product">
         Reservar este <span aria-hidden="true">↗</span>
-      </button>
+      </span>
     </div>
   </div>
-</article>
+</a>
